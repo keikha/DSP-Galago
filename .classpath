@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/ark-tweet-nlp-0.3.2.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/kstem-3.4.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/commons-compress-1.8.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/trove4j-3.0.3.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/indri.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/xz-1.5.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/bliki-core-3.0.19.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/commons-codec-1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/core-3.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/drmaa-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/guava-11.0.2.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/javassist-3.12.1.GA.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/javax.servlet-2.5.0.v201103041518.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/jetty-continuation-7.6.8.v20121106.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/jetty-http-7.6.8.v20121106.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/jetty-io-7.6.8.v20121106.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/jetty-server-7.6.8.v20121106.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/jetty-util-7.6.8.v20121106.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/jsr305-1.3.9.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/reflections-0.9.8.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/snappy-java-1.0.5-M4.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/tupleflow-3.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/xml-apis-1.0.b2.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/xmlenc-0.52.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
