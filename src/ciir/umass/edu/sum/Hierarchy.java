@@ -65,8 +65,8 @@ public class Hierarchy {
 	//parameters
 	public static int minDocCount = 2;
 	public static int minCharCount = 2;
-	public static int windowSize = 5;
-	public static int distToQueryTerm = 8;
+	public static int windowSize = 8; //original 5
+	public static int distToQueryTerm = 10;
 	public static boolean usePhrases = false;
 	public static boolean usePhrasesOnly = false;
 	
@@ -77,6 +77,7 @@ public class Hierarchy {
 	
 	//local variables
 	private GalagoSearchEngine se = null;
+    private boolean hashTags = false; //adding hash tag functionality
 	private Hashtable<String, Double> queryLanguageModel = null;
 	private String[] vocabs = null;//all vocabulary in the query model
 	private List<Integer> topicTerms = null;//all potential topic terms --> a subset of vocabulary
@@ -89,6 +90,7 @@ public class Hierarchy {
 	private KStemmer st = new KStemmer();
 	private POSTagger tagger = new POSTagger();
 	private NPExtractor npe = null;
+    private TreeMap<String, Integer> tm = new TreeMap<String, Integer>(); //store aspect phrase count
 	
 	/**
 	 * @param args
@@ -185,6 +187,17 @@ public class Hierarchy {
 	{
 		this.se = se;
 		npe = new NPExtractor(se);
+<<<<<<< HEAD
+	}
+    public Hierarchy(GalagoSearchEngine se, boolean hashtag, TreeMap tm)
+    {
+        this.se = se;
+        this.hashTags = hashtag;
+        npe = new NPExtractor(se);
+        this.tm = tm;
+    }
+
+=======
 	}	
 	
 	public static String generateSDMFieldQuery(String q)
@@ -207,6 +220,7 @@ public class Hierarchy {
 		return "#combine:0=0.8:1=0.15:2=0.05:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
 	}
 	
+>>>>>>> e8880737cf90d753d2663468c58f79073e367be4
 	public void estimate(String query, int topD) throws Exception
 	{
 		System.out.println(generateSDMFieldQuery(query));
@@ -254,9 +268,7 @@ public class Hierarchy {
 		for(int i=0;i<dlms.length;i++)
 		{
 			dpvs[i] = new DocumentPhraseVector();
-
 			dlms[i] = buildDocumentLM(dvs[i], qTerms, vocabMinDistanceToQT, dpvs[i]);
-			
 			if(dlms[i]==null)
 				continue;
 			
@@ -341,7 +353,18 @@ public class Hierarchy {
 			if(content.isEmpty())
 				return lm;
 			//FeatureExtractor fe = new FeatureExtractor(se);
-			List<NounPhrase> nps = tagger.extract(content);
+            List<NounPhrase> nps= new ArrayList<NounPhrase>();
+            if(!hashTags)
+                nps = tagger.extract(content);
+            else {
+                String[] tokens = content.split("\\s+");
+                for(int i=0;i<tokens.length;i++){
+                    if(!tokens[i].isEmpty()) {
+                        nps.add(new NounPhrase(tokens[i], i, i));
+                    }
+                }
+            }
+
 			for(int i=0;i<nps.size();i++)
 			{
 				if(Stopper.getInstance().isStop(nps.get(i).text) || filter(nps.get(i).text))
@@ -352,7 +375,16 @@ public class Hierarchy {
 				//else
 					//fe.run(nps.get(i).text, 200);
 			}
-			//List<NounPhrase> nps = npe.extract(content);
+            if (hashTags) {
+                for(int i=0;i<nps.size();i++)
+                {
+                    if(Stopper.getInstance().isStopTag(nps.get(i).text))
+                    {
+                        nps.remove(i);
+                        i--;
+                    }
+                }
+            }
 			if(printPhrase)
 			{
 				for(int i=0;i<nps.size();i++)
@@ -361,13 +393,27 @@ public class Hierarchy {
 			
 			for(int i=0;i<nps.size();i++)
 			{
-				NounPhrase np = nps.get(i);
-				if(!usePhrasesOnly || np.text.indexOf(" ") != -1)
-				{
-					add(np.text, ngramFreq);
-					updateMin(minDistanceToQT, np.text, minDist(qTermPos, np.start, np.end));
-					dpv.add(np.text, new Markup(np.start, np.end));
-				}
+                NounPhrase np = nps.get(i);
+                if((!usePhrasesOnly || np.text.indexOf(" ")!=-1) && !hashTags)
+                {
+                    if (tm.containsKey(nps.get(i).text))
+                        tm.put(nps.get(i).text, tm.get(nps.get(i).text)+1);
+                    else
+                        tm.put(nps.get(i).text, 1);
+                    add(np.text, ngramFreq);
+                    updateMin(minDistanceToQT, np.text, minDist(qTermPos, np.start, np.end));
+                    dpv.add(np.text, new Markup(np.start, np.end));
+                }
+                else if(hashTags)
+                {
+                    if (tm.containsKey(nps.get(i).text))
+                        tm.put(nps.get(i).text, tm.get(nps.get(i).text)+1);
+                    else
+                        tm.put(nps.get(i).text, 1);
+                    add(np.text, ngramFreq);
+                    updateMin(minDistanceToQT, np.text, minDist(qTermPos, np.start, np.end));
+                    dpv.add(np.text, new Markup(np.start, np.end));
+                }
 			}
 		}
 		else

@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
 import org.lemurproject.galago.tupleflow.Parameters;
@@ -20,13 +20,74 @@ import ciir.umass.edu.retrieval.utils.QueryProcessor;
 import ciir.umass.edu.retrieval.utils.GalagoSearchEngine;
 import ciir.umass.edu.retrieval.utils.StringUtils;
 import ciir.umass.edu.utilities.Sorter;
-//import sun.net.www.content.audio.wav;
 
 public class TermExtractor {
-	/**
-	 * @param args
-	 * @throws IOException 
-	 */
+
+    int topD = 1000;
+    int topT = 20;
+    public TermExtractor(String indexPath) throws Exception {
+        //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
+        this.extractor = new DSPApprox();
+        this.se = new GalagoSearchEngine(indexPath);
+        // te = new TermExtractor(e, );
+
+    }
+
+    public TermExtractor(DSPApprox e, GalagoSearchEngine se) {
+        this.extractor = e;
+        this.se = se;
+
+    }
+
+    public List<String> getResults(String query, boolean hashTag) throws Exception{
+        tm = new TreeMap<String, Integer>();
+        Hierarchy.usePhrases = true;
+        Hierarchy.usePhrasesOnly = true;
+        List<String> S = new ArrayList<String>();
+        List<TopicTerm> terms = extract(query, topD, topT, hashTag);
+        for(int i=0;i<terms.size();i++) {
+            S.add(terms.get(i).term);
+        }
+        return S;
+    }
+    public List<String> getDocuments(String query, int topDocs) throws Exception{
+        ScoredDocument[] r = null;
+        List<String> S = new ArrayList<String>();
+        r = se.runQuery(QueryProcessor.generateMRFQuery(query), topDocs);
+        int size = Math.min(topD, r.length);
+        Long[] docIDs = new Long[size];
+        for(int j=0;j<r.length;j++)
+        {
+            docIDs[j] = r[j].document;
+        }
+
+        // fix this to get document content -  Ask Mostafa
+
+        /*ParsedDocument[] pd = se.getParsedDocuments(docIDs);
+        Pattern p = Pattern.compile("<TWEET>(.*?)</TWEET>");
+
+        for(int z=0;z<pd.length;z++) {
+            Matcher m = p.matcher(pd[z].content);
+            m.find();
+            S.add(m.group(1));
+            //System.out.println(pd[z].content);
+        }*/
+        return S;
+    }
+    public String getPhraseCount(String query) throws Exception {
+        Integer count = 0;
+        if (tm.containsKey(query))
+            count = tm.get(query);
+        return Integer.toString(count);
+    }
+
+
+
+
+    /**
+         * @param args
+         * @throws IOException
+         */
 	public static void main(String[] args) throws IOException {
 
 		/*String queryFile = DataSource.stemmedQueryFile;
@@ -129,19 +190,19 @@ public class TermExtractor {
 						System.out.println(m.group(1));
 					}
 					*/
-					List<TopicTerm> terms = te.extract(text, topD, topT);
+					List<TopicTerm> terms = te.extract(text, topD, topT, false);
                     			List<String> S = new ArrayList<String>();
-                    			for(int i=0;i<terms.size();i++) {
-                        			S.add(terms.get(i).term);
-                    			}
+                    for(int i=0;i<terms.size();i++) {
+                        S.add(terms.get(i).term);
+                    }
 					for(int i=0;i<terms.size();i++) {
-//                        			FeatureExtractor fe = new FeatureExtractor(se);
-//                        			double [] scores = fe.run(terms.get(i).term, 1000, S);
+//                      FeatureExtractor fe = new FeatureExtractor(se);
+//                      double [] scores = fe.run(terms.get(i).term, 1000, S);
 						System.out.println((i+1) + "\t" + terms.get(i).term + "\t" + terms.get(i).weight);
-//                        			for(int z=0;z< scores.length;z++)
-//                           				System.out.print(scores[z] + " ");
-                        			System.out.println();
-                    			}
+//                      for(int z=0;z< scores.length;z++)
+//                      System.out.print(scores[z] + " ");
+                        System.out.println();
+                    }
 				}
 			}while(true);
 		}
@@ -156,19 +217,21 @@ public class TermExtractor {
 	protected KStemmer stemmer = new KStemmer();
 	protected DSPApprox extractor = null;
 	public static GalagoSearchEngine se = null;
-	
-	public TermExtractor(DSPApprox e, GalagoSearchEngine se)
-	{
-		this.extractor = e;
-		this.se = se;
-	}
-	public List<TopicTerm> extract(String query, int topD, int topTerm) throws Exception
+    public TreeMap<String, Integer> tm = null;
+
+	public List<TopicTerm> extract(String query, int topD, int topTerm, boolean hashTag) throws Exception
 	{
 		List<TopicTerm> terms = null;
 		try{
-			Hierarchy h = new Hierarchy(se);
-			h.estimate(query, topD);
-			
+            Hierarchy h = null;
+            if(!hashTag) {
+			    h = new Hierarchy(se, false, tm);
+			    h.estimate(query, topD);
+            }
+            else {
+                h = new Hierarchy(se, true, tm);
+                h.estimate(query, topD);
+            }
 			String q = stemmer.stem(query);			
 			terms = extractor.generateTopicTerms(q, h, topTerm);			
 		}
