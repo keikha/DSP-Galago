@@ -1,0 +1,100 @@
+<project name="DSP" basedir="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago">
+
+    <!-- Variables -->
+    
+	<!-- <property name="src.dir"    value="src"/> -->
+	
+	<property name="src.dir"    value="src"/>
+	
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+    <property name="doc.dir"     value="${build.dir}/doc"/>
+
+    <!-- Set the version here -->
+    <property name="version"    value="1.0" />
+	<property name="jar.name"    value="DSP.jar" />
+	<property name="jar.file.all"    value="${jar.dir}/${jar.name}" />
+	
+    
+    <property name="user"        value="keikham" />
+    <property name="server.name"        value="sydney.cs.umass.edu" />
+    
+    <property name="server.path"        value="/mnt/nfs/work1/keikham/adobe-twitter/jars" />
+    
+    <property name="server"    value="${user}@${server.name}:${server.path}" />
+
+	<property name="galagoLib"    value="/Users/mostafakeikha/PHD/tools/galago/galago/core/target/appassembler/lib/" />
+	<property name="dspLib"    value="lib" />
+	
+    <path id="classpath">
+
+	<pathelement path=".:
+	${galagoLib}/*:
+	${dspLib}/kstem-3.4.jar:
+	${dspLib}/ark-tweet-nlp-0.3.2.jar
+	"/>
+
+    </path>
+	
+	<path id="sourcepath">
+		<pathelement path="${src.dir}"/>
+	</path>
+
+    <!-- Targets -->
+    
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <ant target="clean" />
+    <mkdir dir="${classes.dir}"/>
+    	
+    <javac includeantruntime="false" srcdir="${src.dir}"
+          	destdir="${classes.dir}"
+           	debug="on"
+           	classpathref="classpath"
+		/>
+    </target>
+
+    <target name="jar">
+    	<ant target="clean" />
+    	<ant target="compile"/>
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.file.all}"
+            basedir="${classes.dir}" />
+    </target>
+
+	
+	
+    
+    <target name="doc">
+        <javadoc packagenames="package_names"
+               sourcepath="${src.dir}"
+               defaultexcludes="yes"
+               destdir="${doc.dir}"
+               author="true"
+               version="true"
+               use="true"
+		classpathref="classpath"
+        	access="private">
+        	
+  	<link href="http://java.sun.com/j2se/1.5.0/docs/api"/>
+	<link href="http://www.dpml.net/api/ant/1.7.0"/>
+	<link href="http://junit.sourceforge.net/junit3.8.1/javadoc/"/>
+        </javadoc>
+    </target>
+    
+   
+	
+	<target name="deploy">
+	        <ant target="jar" />
+	    	<scp file="${jar.file.all}"
+	            todir="${server}"            
+	    		password=“*****”
+	             />
+	    </target>
+
+</project>
+
