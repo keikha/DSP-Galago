@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/bliki-core-3.0.19.jar"/>
 	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/commons-codec-1.2.jar"/>
 	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/commons-httpclient-3.1.jar"/>
-	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/core-3.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/core-3.6-SNAPSHOT.jar" sourcepath="/Users/mostafakeikha/PHD/tools/galago/galago/core/src"/>
 	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/drmaa-1.0.jar"/>
 	<classpathentry kind="lib" path="/Users/mostafakeikha/Dropbox/workspaceCIIR/DSP-Galago/lib/guava-11.0.2.jar"/>

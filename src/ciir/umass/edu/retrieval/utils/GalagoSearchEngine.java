@@ -1,5 +1,6 @@
 package ciir.umass.edu.retrieval.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,11 +106,34 @@ public class GalagoSearchEngine {
 		return (Document[]) documents.toArray();
 	}
 	
+	
+	public String getDocumentText(String docName, String fieldName) throws IOException
+	{
+		
+		DocumentComponents dc = new DocumentComponents(true, false, false);
+	    
+		assert retrieval.getAvailableParts().containsKey("corpus") : "Index does not contain a corpus part.";
+		
+	    Document document = retrieval.getDocument(docName, dc);
+	    if (document != null) {
+	      String text = document.text;
+	      if(text.contains("<"+ fieldName +">"))
+	    	   return text.substring(text.indexOf("<" + fieldName +">")+fieldName.length()+2 , text.indexOf("</" + fieldName +">"));	    	   
+	    }
+	    
+		return "";		
+	}
+	
+	public String getDocumentText(long docID, String fieldName) throws IOException
+	{
+		String docName = retrieval.getDocumentName((int) docID);
+		return getDocumentText(docName, fieldName);
+	}
 	public Document[] getDocumentVectors(Long[] docInternalIDs) throws Exception {
 		
 		TagTokenizer tokenizer = new TagTokenizer(new FakeParameters(param));
 		    
-		DocumentComponents dc = new DocumentComponents(param);
+		DocumentComponents dc = new DocumentComponents(true, false, false);
 		
 //		List<Document> documents = new ArrayList<Document>();
 		Document[] documents = new Document[docInternalIDs.length];
