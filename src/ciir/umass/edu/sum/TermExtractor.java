@@ -190,7 +190,7 @@ public class TermExtractor {
 						System.out.println(m.group(1));
 					}
 					*/
-					List<TopicTerm> terms = te.extract(text, topD, topT, false);
+					List<TopicTerm> terms = te.extract(text, topD, topT, true);
                     			List<String> S = new ArrayList<String>();
                     for(int i=0;i<terms.size();i++) {
                         S.add(terms.get(i).term);

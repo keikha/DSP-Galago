@@ -119,6 +119,7 @@ public class GalagoSearchEngine {
 
 		    Document document = retrieval.getDocument(retrieval.getDocumentName((int) id), dc);
 		    tokenizer.tokenize(document);
+		    System.out.println(document.terms.toString());
 		    documents[counter++] = document;
 //		    documents.add(document);
 			
@@ -128,11 +129,11 @@ public class GalagoSearchEngine {
 		return documents;
 	}
 
-	public double getTermCollectionProb(String term, boolean isStem, boolean smoothed) throws Exception
+	public double getTermCollectionProb(String term, boolean isStem, boolean smoothed, String  field) throws Exception
 	{
 		if(smoothed)
-			return ((double)getTermCount(term, isStem)+0.5)/(collectionTermCount+1);
-		return ((double)getTermCount(term, isStem))/(collectionTermCount);
+			return ((double)getTermCount(term, isStem, field)+0.5)/(collectionTermCount+1);
+		return ((double)getTermCount(term, isStem , field))/(collectionTermCount);
 	}
 	
 	
@@ -142,14 +143,14 @@ public class GalagoSearchEngine {
 		
 	}
 
-	public long getGramCount(String query, boolean isStemmed) throws Exception {
+	public long getGramCount(String query, boolean isStemmed, String field) throws Exception {
 		
 		String[] strs = query.split(" ");
 		
 		String unigram = "";
 		for(int i=0;i<strs.length;i++)
 		{
-			unigram += strs[i] + ".tweet ";
+			unigram += strs[i] + "." + field + " ";
 		}
 		
 		// TODO Auto-generated method stub
@@ -170,9 +171,9 @@ public class GalagoSearchEngine {
 
 
 
-	public double getTermCount(String query, boolean isStemmed) throws Exception {
+	public double getTermCount(String query, boolean isStemmed, String field) throws Exception {
 
-		query = "#combine(" + query + ".tweet)";
+		query = query + "." +field;
         Node node = StructuredQuery.parse(query);
         node.getNodeParameters().set("queryType", "count");
         node = retrieval.transformQuery(node,  param);

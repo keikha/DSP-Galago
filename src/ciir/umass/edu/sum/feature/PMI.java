@@ -14,9 +14,11 @@ import java.util.*;
 public class PMI {
     //local variables
     private GalagoSearchEngine se = null;
-    public PMI(GalagoSearchEngine se2)
+    private String field = "";
+    public PMI(GalagoSearchEngine se2, String f)
     {
         this.se = se2;
+        this.field = f;
     }
     public double getValue(String Phrase)
     {
@@ -30,11 +32,11 @@ public class PMI {
                 {
                     String gram = s[i-1] + " " + s[i];
                     gram = QueryProcessor.makeIndriFriendly(gram);
-                    double c1 = se.getTermCount(s[i-1], false);
-                    double c2 = se.getTermCount(s[i], false);
+                    double c1 = se.getTermCount(s[i-1], false , this.field);
+                    double c2 = se.getTermCount(s[i], false, this.field);
                     double c = 0;
                     if(gram.compareTo("") != 0)
-                        c = se.getGramCount(gram, true);
+                        c = se.getGramCount(gram, true, this.field);
                     if(c1 > 0 && c2 > 0)
                     {
                         pmi = c / c1;

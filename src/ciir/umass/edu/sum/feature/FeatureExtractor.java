@@ -14,6 +14,7 @@ public class FeatureExtractor {
 private GalagoSearchEngine se = null;
 	
 	protected long maxResultsFetch = 1000;
+	private String field = "tweet";
 	
  	public FeatureExtractor(String col) throws Exception
 	{
@@ -36,7 +37,7 @@ private GalagoSearchEngine se = null;
 			ScoredDocument[] r = se.runQuery(query, topD);
 		
 			DiversityFeature df = new DiversityFeature(); //Diversity feature
-            PMI pm = new PMI(se); //PMI feature
+            PMI pm = new PMI(se, field); //PMI feature
             Relevance re = new Relevance();
 
 
@@ -52,7 +53,7 @@ private GalagoSearchEngine se = null;
 
             features[0] = diversity;
             features[1] = pmi;
-            features[2] = (double)se.getGramCount(query, true)/(double)se.getCollectionTermCount(); //uniqueness
+            features[2] = (double)se.getGramCount(query, true, field)/(double)se.getCollectionTermCount(); //uniqueness
             features[3] = rel;
             //features[3] = topicality;
 

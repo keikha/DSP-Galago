@@ -20,9 +20,11 @@ public class NPExtractor {
 	public static double threshold = 200;//1000;
 	protected GalagoSearchEngine se = null;
 	
-	public NPExtractor(GalagoSearchEngine se)
+	private String field;
+	public NPExtractor(GalagoSearchEngine se, String field)
 	{
 		this.se = se;
+		this.field = field;
 	}
 	public List<NounPhrase> extract(String sentence)
 	{
@@ -48,11 +50,11 @@ public class NPExtractor {
 					{
 						String gram = s[i-1] + " " + s[i];
 						gram = QueryProcessor.makeIndriFriendly(gram);
-						double c1 = se.getTermCount(s[i-1], false);
-						double c2 = se.getTermCount(s[i], false);
+						double c1 = se.getTermCount(s[i-1], false, field);
+						double c2 = se.getTermCount(s[i], false, field);
 						double c = 0;
 						if(gram.compareTo("") != 0)
-							c = se.getGramCount(gram, true);
+							c = se.getGramCount(gram, true, field);
 						if(c1 > 0 && c2 > 0)
 						{
 							pmi = c / c1;

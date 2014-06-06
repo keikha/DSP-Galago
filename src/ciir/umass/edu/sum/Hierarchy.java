@@ -78,6 +78,7 @@ public class Hierarchy {
 	//local variables
 	private GalagoSearchEngine se = null;
     private boolean hashTags = false; //adding hash tag functionality
+    private String field="";
 	private Hashtable<String, Double> queryLanguageModel = null;
 	private String[] vocabs = null;//all vocabulary in the query model
 	private List<Integer> topicTerms = null;//all potential topic terms --> a subset of vocabulary
@@ -186,14 +187,19 @@ public class Hierarchy {
 	public Hierarchy(GalagoSearchEngine se)
 	{
 		this.se = se;
-		npe = new NPExtractor(se);
+		npe = new NPExtractor(se, field);
 
 	}
 	public Hierarchy(GalagoSearchEngine se, boolean hashtag)
     {
         this.se = se;
         this.hashTags = hashtag;
-        npe = new NPExtractor(se);
+        
+		if(this.hashTags)
+			field="tags";
+		else 
+			field = "tweet";
+        npe = new NPExtractor(se, field);
 //        this.tm = tm;
     }
 	
@@ -201,29 +207,39 @@ public class Hierarchy {
     {
         this.se = se;
         this.hashTags = hashtag;
-        npe = new NPExtractor(se);
+        
+		if(this.hashTags)
+			field="tags";
+		else 
+			field = "tweet";
+		
+        npe = new NPExtractor(se, field);
 //        this.tm = tm;
     }
 
 
 		
 	
-	public static String generateSDMFieldQuery(String q)
+	public String generateSDMFieldQuery(String q)
 	{
+		
+		
+		
 		String[] strs = q.split(" ");
 		if(strs.length == 1)
-			return "#combine(" + q + ".tweet)";
+			return "#combine(" + q + "." + field+ ")";
 		String ow = "";
 		String uw = "";
 		String unigram = "";
 		for(int i=0;i<strs.length-1;i++)
 		{
-			ow += "#od:1(" + strs[i] + ".tweet " + strs[i+1] + ".tweet) ";
-			uw += "#uw:8(" + strs[i] + ".tweet " + strs[i+1] + ".tweet) ";
-			unigram += strs[i] + ".tweet ";
+			ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+			uw += "#uw:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+			
+			unigram += strs[i] + "." + field +" ";
 		}
 		
-		unigram += strs[strs.length-1] + ".tweet ";
+		unigram += strs[strs.length-1] + "." + field ;
 		
 		return "#combine:0=0.8:1=0.15:2=0.05:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
 	}
@@ -1022,9 +1038,9 @@ public class Hierarchy {
 		//System.out.println("term : " + stem);
 		
 		if(stem.indexOf(" ") == -1)//single-word term
-			return se.getTermCollectionProb(stem, true, false);
+			return se.getTermCollectionProb(stem, true, false, field);
 		
-		return ((double)se.getGramCount(stem, true))/se.getCollectionTermCount();//multi-word term
+		return ((double)se.getGramCount(stem, true, field))/se.getCollectionTermCount();//multi-word term
 		
 		//return ((double)wikiConcepts.get(stem).longValue())/se.getCollectionTermCount();//multi-word term
 		//return ((double)se.getGramCount(stem, true))/se.getCollectionTermCount();//multi-word term

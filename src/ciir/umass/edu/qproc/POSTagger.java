@@ -82,17 +82,29 @@ public class POSTagger {
 		}
 		return output;
     }
+	
+	
 	public List<NounPhrase> extract(String tweet) {
 		List<NounPhrase> nps = new ArrayList<NounPhrase>();
 		List<Tagger.TaggedToken> t = tagger.tokenizeAndTag(tweet);
 		nps.add(new NounPhrase(t.get(0).token, 0, 0));
 		for(int i=1;i<t.size();i++) {
-			if(!checkNoun(t.get(i).tag) || !checkNoun(t.get(i-1).tag))
-				nps.add(new NounPhrase(t.get(i).token, i, i));
-			else {
-				NounPhrase np = nps.get(nps.size()-1);
-				nps.set(nps.size()-1, new NounPhrase(np.text + " " + t.get(i).token, np.start, i));
-			}
+			
+			if((checkNoun(t.get(i).tag) && t.get(i-1).tag.startsWith("A")) || (checkNoun(t.get(i).tag) && checkNoun(t.get(i-1).tag))) {
+	               NounPhrase np = nps.get(nps.size()-1);
+	               nps.set(nps.size()-1, new NounPhrase(np.text + " " + t.get(i).token, np.start, i));
+	           }
+	           else {
+	               nps.add(new NounPhrase(t.get(i).token, i, i));
+	           }
+			
+			
+//			if(!checkNoun(t.get(i).tag) || !checkNoun(t.get(i-1).tag))
+//				nps.add(new NounPhrase(t.get(i).token, i, i));
+//			else {
+//				NounPhrase np = nps.get(nps.size()-1);
+//				nps.set(nps.size()-1, new NounPhrase(np.text + " " + t.get(i).token, np.start, i));
+//			}
 		}
 		return nps;
     }
