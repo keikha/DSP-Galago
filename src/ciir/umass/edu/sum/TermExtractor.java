@@ -225,13 +225,14 @@ public class TermExtractor {
 		try{
             Hierarchy h = null;
             if(!hashTag) {
-			    h = new Hierarchy(se, false, tm);
+			    h = new Hierarchy(se, false);
 			    h.estimate(query, topD);
             }
             else {
-                h = new Hierarchy(se, true, tm);
+                h = new Hierarchy(se, true);
                 h.estimate(query, topD);
             }
+            
 			String q = stemmer.stem(query);			
 			terms = extractor.generateTopicTerms(q, h, topTerm);			
 		}

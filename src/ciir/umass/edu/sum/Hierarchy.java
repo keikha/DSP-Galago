@@ -187,18 +187,26 @@ public class Hierarchy {
 	{
 		this.se = se;
 		npe = new NPExtractor(se);
-<<<<<<< HEAD
+
 	}
+	public Hierarchy(GalagoSearchEngine se, boolean hashtag)
+    {
+        this.se = se;
+        this.hashTags = hashtag;
+        npe = new NPExtractor(se);
+//        this.tm = tm;
+    }
+	
     public Hierarchy(GalagoSearchEngine se, boolean hashtag, TreeMap tm)
     {
         this.se = se;
         this.hashTags = hashtag;
         npe = new NPExtractor(se);
-        this.tm = tm;
+//        this.tm = tm;
     }
 
-=======
-	}	
+
+		
 	
 	public static String generateSDMFieldQuery(String q)
 	{
@@ -220,7 +228,7 @@ public class Hierarchy {
 		return "#combine:0=0.8:1=0.15:2=0.05:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
 	}
 	
->>>>>>> e8880737cf90d753d2663468c58f79073e367be4
+
 	public void estimate(String query, int topD) throws Exception
 	{
 		System.out.println(generateSDMFieldQuery(query));
