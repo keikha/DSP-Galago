@@ -144,7 +144,7 @@ public class GalagoSearchEngine {
 
 	public long getGramCount(String query, boolean isStemmed) throws Exception {
 		// TODO Auto-generated method stub
-		query = "#od:1("+ query + "))";
+		query = "#od:1("+ query + ")";
 		
         Node node = StructuredQuery.parse(query);
         node.getNodeParameters().set("queryType", "count");

@@ -187,9 +187,30 @@ public class Hierarchy {
 		npe = new NPExtractor(se);
 	}	
 	
+	public static String generateSDMFieldQuery(String q)
+	{
+		String[] strs = q.split(" ");
+		if(strs.length == 1)
+			return "#combine(" + q + ".tweet)";
+		String ow = "";
+		String uw = "";
+		String unigram = "";
+		for(int i=0;i<strs.length-1;i++)
+		{
+			ow += "#od:1(" + strs[i] + ".tweet " + strs[i+1] + ".tweet) ";
+			uw += "#uw:8(" + strs[i] + ".tweet " + strs[i+1] + ".tweet) ";
+			unigram += strs[i] + ".tweet ";
+		}
+		
+		unigram += strs[strs.length-1] + ".tweet ";
+		
+		return "#combine:0=0.8:1=0.15:2=0.05:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
+	}
+	
 	public void estimate(String query, int topD) throws Exception
 	{
-		ScoredDocument[] r = se.runQuery(QueryProcessor.generateMRFQuery(query), topD);
+		System.out.println(generateSDMFieldQuery(query));
+		ScoredDocument[] r = se.runQuery(generateSDMFieldQuery(query), topD);
 		//ScoredExtentResult[] r = se.runQuery("#1(" + query + ")", topD);
 		
 		//get docid and score
