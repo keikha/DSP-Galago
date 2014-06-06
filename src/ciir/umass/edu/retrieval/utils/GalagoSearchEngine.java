@@ -143,8 +143,17 @@ public class GalagoSearchEngine {
 	}
 
 	public long getGramCount(String query, boolean isStemmed) throws Exception {
+		
+		String[] strs = query.split(" ");
+		
+		String unigram = "";
+		for(int i=0;i<strs.length;i++)
+		{
+			unigram += strs[i] + ".tweet ";
+		}
+		
 		// TODO Auto-generated method stub
-		query = "#od:1("+ query + ")";
+		query = "#od:1("+ unigram + ")";
 		
         Node node = StructuredQuery.parse(query);
         node.getNodeParameters().set("queryType", "count");
@@ -163,7 +172,7 @@ public class GalagoSearchEngine {
 
 	public double getTermCount(String query, boolean isStemmed) throws Exception {
 
-		
+		query = "#combine(" + query + ".tweet)";
         Node node = StructuredQuery.parse(query);
         node.getNodeParameters().set("queryType", "count");
         node = retrieval.transformQuery(node,  param);
