@@ -214,41 +214,15 @@ public class Hierarchy {
 			field = "tweet";
 		
         npe = new NPExtractor(se, field);
-//        this.tm = tm;
+        this.tm = tm;
     }
 
 
-		
-	
-	public String generateSDMFieldQuery(String q)
-	{
-		
-		
-		
-		String[] strs = q.split(" ");
-		if(strs.length == 1)
-			return "#combine(" + q + "." + field+ ")";
-		String ow = "";
-		String uw = "";
-		String unigram = "";
-		for(int i=0;i<strs.length-1;i++)
-		{
-			ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
-			uw += "#uw:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
-			
-			unigram += strs[i] + "." + field +" ";
-		}
-		
-		unigram += strs[strs.length-1] + "." + field ;
-		
-		return "#combine:0=0.8:1=0.15:2=0.05:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
-	}
-	
-
 	public void estimate(String query, int topD) throws Exception
 	{
-		System.out.println(generateSDMFieldQuery(query));
-		ScoredDocument[] r = se.runQuery(generateSDMFieldQuery(query), topD);
+		//System.out.println(QueryProcessor.generateSDMFieldQuery(query, field));
+        ScoredDocument[] r = se.runQuery(QueryProcessor.generateSDMFieldQuery(query, field), topD);
+		//ScoredDocument[] r = se.runQuery(generateSDMFieldQuery(query), topD);
 		//ScoredExtentResult[] r = se.runQuery("#1(" + query + ")", topD);
 		
 		//get docid and score

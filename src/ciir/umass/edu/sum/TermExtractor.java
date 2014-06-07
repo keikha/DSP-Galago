@@ -39,6 +39,7 @@ public class TermExtractor {
 
     }
 
+
     public List<String> getResults(String query, boolean hashTag) throws Exception{
         tm = new TreeMap<String, Integer>();
         Hierarchy.usePhrases = true;
@@ -50,39 +51,27 @@ public class TermExtractor {
         }
         return S;
     }
-    public List<String> getDocuments(String query, int topDocs) throws Exception{
+    public List<String> getDocuments(String query, int topDocs, String field) throws Exception{
         ScoredDocument[] r = null;
         List<String> S = new ArrayList<String>();
-        r = se.runQuery(QueryProcessor.generateMRFQuery(query), topDocs);
+        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(query, field), topDocs);
         int size = Math.min(topD, r.length);
         Long[] docIDs = new Long[size];
         for(int j=0;j<r.length;j++)
         {
             docIDs[j] = r[j].document;
+            String text = se.getDocumentText(docIDs[j], field);
+            S.add(text);
         }
-
         // fix this to get document content -  Ask Mostafa
-
-        /*ParsedDocument[] pd = se.getParsedDocuments(docIDs);
-        Pattern p = Pattern.compile("<TWEET>(.*?)</TWEET>");
-
-        for(int z=0;z<pd.length;z++) {
-            Matcher m = p.matcher(pd[z].content);
-            m.find();
-            S.add(m.group(1));
-            //System.out.println(pd[z].content);
-        }*/
         return S;
     }
-    public String getPhraseCount(String query) throws Exception {
+    public String getPhraseCount(String query) throws Exception{
         Integer count = 0;
         if (tm.containsKey(query))
             count = tm.get(query);
         return Integer.toString(count);
     }
-
-
-
 
     /**
          * @param args
@@ -217,7 +206,7 @@ public class TermExtractor {
 	protected KStemmer stemmer = new KStemmer();
 	protected DSPApprox extractor = null;
 	public static GalagoSearchEngine se = null;
-    public TreeMap<String, Integer> tm = null;
+    public TreeMap<String, Integer> tm = new TreeMap<String, Integer>();
 
 	public List<TopicTerm> extract(String query, int topD, int topTerm, boolean hashTag) throws Exception
 	{
@@ -225,11 +214,11 @@ public class TermExtractor {
 		try{
             Hierarchy h = null;
             if(!hashTag) {
-			    h = new Hierarchy(se, false);
+			    h = new Hierarchy(se, false, tm);
 			    h.estimate(query, topD);
             }
             else {
-                h = new Hierarchy(se, true);
+                h = new Hierarchy(se, true, tm);
                 h.estimate(query, topD);
             }
             
