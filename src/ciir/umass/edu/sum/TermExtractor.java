@@ -25,13 +25,27 @@ public class TermExtractor {
 
     int topD = 1000;
     int topT = 20;
-    public TermExtractor(String indexPath) throws Exception {
+    private Parameters param= null;
+    
+    
+//    public TermExtractor(String indexPath) throws Exception {
+//        //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
+//        this.extractor = new DSPApprox();
+//        this.se = new GalagoSearchEngine(indexPath);
+//        // te = new TermExtractor(e, );
+//
+//    }
+    
+    public TermExtractor(Parameters p) throws Exception {
         //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
-        this.extractor = new DSPApprox();
-        this.se = new GalagoSearchEngine(indexPath);
+        
+    	this.param = p;
+    	this.extractor = new DSPApprox();
+        this.se = new GalagoSearchEngine(param);
         // te = new TermExtractor(e, );
 
     }
+    
 
     public TermExtractor(DSPApprox e, GalagoSearchEngine se) {
         this.extractor = e;

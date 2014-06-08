@@ -49,7 +49,18 @@ public class GalagoSearchEngine {
 	public GalagoSearchEngine(Parameters p) throws Exception {
 		 retrieval = RetrievalFactory.instance(p);
 		 param = p;
-		 
+
+		 //////////////////
+		 Node n = new Node();
+
+		 n.setOperator("lengths");
+		 n.getNodeParameters().set("part", "lengths");
+
+		 FieldStatistics stat = retrieval.getCollectionStatistics(n);
+		 collectionTermCount = stat.collectionLength;
+		 collectionDocCount = stat.documentCount;
+
+		 //////////////////////
 	}
 	
 
@@ -106,6 +117,20 @@ public class GalagoSearchEngine {
 		return (Document[]) documents.toArray();
 	}
 	
+
+	public Document getDocumentVector(String docExternalID) throws Exception {
+		
+		TagTokenizer tokenizer = new TagTokenizer(new FakeParameters(param));
+
+		DocumentComponents dc = new DocumentComponents(param);
+
+		Document document = retrieval.getDocument( docExternalID , dc);
+		tokenizer.tokenize(document);
+
+
+		return document;
+	}
+
 	
 	public String getDocumentText(String docName, String fieldName) throws IOException
 	{
@@ -206,6 +231,13 @@ public class GalagoSearchEngine {
         
         
         return stat.nodeFrequency;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		String param = "/Users/mostafakeikha/studies_bigFiles/postdoc/twitter2/param.json";
+		Parameters p = new Parameters();
+		p.parseFile(param);
+		GalagoSearchEngine se = new GalagoSearchEngine(p);
 	}
 
 }
