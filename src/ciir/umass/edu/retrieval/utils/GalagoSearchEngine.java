@@ -118,17 +118,30 @@ public class GalagoSearchEngine {
 	}
 	
 
-	public Document getDocumentVector(String docExternalID) throws Exception {
+	public Document getDocumentVector(String docExternalID, String field) throws Exception {
 		
+		//////////// to be finished 
 		TagTokenizer tokenizer = new TagTokenizer(new FakeParameters(param));
 
 		DocumentComponents dc = new DocumentComponents(param);
-
+		
 		Document document = retrieval.getDocument( docExternalID , dc);
+		
+		
 		tokenizer.tokenize(document);
+		tokenizer.tokenize(getTextInField(document.text, field));
 
 
 		return document;
+	}
+	
+	public String getTextInField(String text, String fieldName)
+	{
+		
+	      if(text.contains("<"+ fieldName +">"))
+	    	   return text.substring(text.indexOf("<" + fieldName +">")+fieldName.length()+2 , text.indexOf("</" + fieldName +">"));
+	      else 
+	    	  return "";
 	}
 
 	
@@ -141,9 +154,7 @@ public class GalagoSearchEngine {
 		
 	    Document document = retrieval.getDocument(docName, dc);
 	    if (document != null) {
-	      String text = document.text;
-	      if(text.contains("<"+ fieldName +">"))
-	    	   return text.substring(text.indexOf("<" + fieldName +">")+fieldName.length()+2 , text.indexOf("</" + fieldName +">"));	    	   
+	      return getTextInField(document.text, fieldName);	    	   
 	    }
 	    
 		return "";		
@@ -234,10 +245,16 @@ public class GalagoSearchEngine {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		args = new String[1];
 		String param = "/Users/mostafakeikha/studies_bigFiles/postdoc/twitter2/param.json";
+		args[0]=param;
+		
 		Parameters p = new Parameters();
-		p.parseFile(param);
+		p = p.parseArgs(args);
+		
 		GalagoSearchEngine se = new GalagoSearchEngine(p);
+		
+		System.out.println(se.getDocumentVector("20091114000000_2").terms.toString());
 	}
 
 }
