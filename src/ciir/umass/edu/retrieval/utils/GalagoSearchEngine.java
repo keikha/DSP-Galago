@@ -2,6 +2,7 @@ package ciir.umass.edu.retrieval.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.lemurproject.galago.core.index.stats.FieldStatistics;
@@ -105,21 +106,21 @@ public class GalagoSearchEngine {
 		return (Long[]) internalDocBuffer.toArray();
 	}
 
-	public Document[] getDocumentVectors(String[] docExternalIDs , String field ) throws Exception {
+	public Document[] getDocumentVectors(String[] docExternalIDs , String field , HashMap<String, String> stem2original ) throws Exception {
 		
 		
 		List<Document> documents = new ArrayList<Document>();
 		
 		for(String id : docExternalIDs)
 		{
-		    documents.add(getDocumentVector(id, field));
+		    documents.add(getDocumentVector(id, field , stem2original));
 		}
 
 		return (Document[]) documents.toArray();
 	}
 	
 
-	public Document getDocumentVector(String docExternalID, String field) throws Exception {
+	public Document getDocumentVector(String docExternalID, String field , HashMap<String, String> stem2original) throws Exception {
 		
 		
 		Document document = retrieval.getDocument( docExternalID , dc);
@@ -127,14 +128,13 @@ public class GalagoSearchEngine {
 		String textInField = getTextInField(document.text, field);
 		Document doc = tokenizer.tokenize(textInField);
 
-		if(param.get("stem", false))
-		{
 
-			for (int i = 0; i < doc.terms.size() ; i++) {
-				doc.terms.set(i, stemmerTerm.stem(doc.terms.get(i)));
-			}
+		/////////// to be continued
+		for (int i = 0; i < doc.terms.size() ; i++) {
+			doc.terms.set(i, stemmerTerm.stem(doc.terms.get(i)));
 		}
-		
+
+
 		//		String stemmed = stemmerSentence.stem(textInField);
 		
 		return doc;
@@ -187,11 +187,11 @@ public class GalagoSearchEngine {
 	}
 
 	
-	public double getTermCollectionProb(String term, boolean isStem, boolean smoothed, String  field) throws Exception
+	public double getTermCollectionProb(String term, boolean isStem, boolean smoothed, String  field, HashMap<String, String> stem2original) throws Exception
 	{
 		if(smoothed)
-			return ((double)getTermCount(term, isStem, field)+0.5)/(collectionTermCount+1);
-		return ((double)getTermCount(term, isStem , field))/(collectionTermCount);
+			return ( (double)getTermCount(term, isStem, field , stem2original )+0.5)/(collectionTermCount+1);
+		return ( (double)getTermCount(term, isStem , field , stem2original ))/(collectionTermCount);
 	}
 	
 	
@@ -201,14 +201,20 @@ public class GalagoSearchEngine {
 		
 	}
 
-	public long getGramCount(String query, boolean isStemmed, String field) throws Exception {
+	public long getGramCount(String query, boolean isStemmed, String field , HashMap<String, String> stem2original) throws Exception {
 		
 		String[] strs = query.split(" ");
 		
 		String unigram = "";
+		String term = "";
 		for(int i=0;i<strs.length;i++)
 		{
-			unigram += strs[i] + "." + field + " ";
+			
+			term = strs[i];
+			if(stem2original.containsKey(term))
+				term = stem2original.get(term);
+			
+			unigram += term + "." + field + " ";
 		}
 		
 		// TODO Auto-generated method stub
@@ -229,9 +235,12 @@ public class GalagoSearchEngine {
 
 
 
-	public double getTermCount(String query, boolean isStemmed, String field) throws Exception {
+	public double getTermCount(String query, boolean isStemmed, String field, HashMap<String, String> stem2original) throws Exception {
 
-		query = query + "." +field;
+		if(stem2original.containsKey(query))
+			query = stem2original.get(query);
+		
+		query = query + "." + field;
         Node node = StructuredQuery.parse(query);
         node.getNodeParameters().set("queryType", "count");
         node = retrieval.transformQuery(node,  param);
