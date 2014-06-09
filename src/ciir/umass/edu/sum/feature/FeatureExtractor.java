@@ -81,7 +81,7 @@ private GalagoSearchEngine se = null;
 		Long[] docIDs = new Long[r.length];
 		for(int j=0;j<r.length;j++)
 			docIDs[j] = r[j].document;		
-		return se.getDocumentVectors(docIDs);
+		return se.getDocumentVectors(docIDs , field);
 	}
 	protected double[] getScores(ScoredDocument[] r) throws Exception
 	{

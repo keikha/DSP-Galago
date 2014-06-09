@@ -125,8 +125,17 @@ public class GalagoSearchEngine {
 		Document document = retrieval.getDocument( docExternalID , dc);
 		
 		String textInField = getTextInField(document.text, field);
-		String stemmed = stemmerSentence.stem(textInField);
-		Document doc = tokenizer.tokenize(stemmed);
+		Document doc = tokenizer.tokenize(textInField);
+
+		if(param.get("stem", false))
+		{
+
+			for (int i = 0; i < doc.terms.size() ; i++) {
+				doc.terms.set(i, stemmerTerm.stem(doc.terms.get(i)));
+			}
+		}
+		
+		//		String stemmed = stemmerSentence.stem(textInField);
 		
 		return doc;
 	}
@@ -232,6 +241,34 @@ public class GalagoSearchEngine {
         
         return stat.nodeFrequency;
 	}
+
+	public double testFunction1() throws Exception
+	{
+		Node node = StructuredQuery.parse("#extents:computing:part=field.krovetz.tweet()");
+        node.getNodeParameters().set("queryType", "count");
+        node = retrieval.transformQuery(node,  param);
+
+        NodeStatistics stat = retrieval.getNodeStatistics(node);
+        
+        
+        return stat.nodeFrequency;
+        
+	}
+	
+	public double testFunction2() throws Exception
+	{
+		Node node = StructuredQuery.parse("#extents:computing:part=field.tweet()");
+        node.getNodeParameters().set("queryType", "count");
+        node = retrieval.transformQuery(node,  param);
+
+        
+        NodeStatistics stat = retrieval.getNodeStatistics(node);
+        
+        
+        return stat.nodeFrequency;
+        
+	}
+	
 	
 	public static void main(String[] args) throws Exception {
 		args = new String[1];
@@ -243,7 +280,14 @@ public class GalagoSearchEngine {
 		
 		GalagoSearchEngine se = new GalagoSearchEngine(p);
 		
-		System.out.println(se.getDocumentVector("20091114000000_2", "tweet").terms.toString());
+//		se.getDocumentVector("20091114000000_2", "tweet").terms.toString()
+//		
+		System.out.println(se.getTermCount("computing", true, "tweet"));
+		
+		
+		
+//		System.out.println(se.testFunction1());
+//		System.out.println(se.testFunction2());
 		
 		
 	}

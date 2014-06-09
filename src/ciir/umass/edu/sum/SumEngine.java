@@ -19,6 +19,9 @@ public class SumEngine {
 	/**
 	 * @param args
 	 */
+	
+	private String field = "tweet";
+	
 	public static void main(String[] args) {
 		
 		try {
@@ -99,7 +102,7 @@ public class SumEngine {
 				scores[j] = score;
 			}
 			//Pull out the parsed document vector
-			Document[] dvs = se.getDocumentVectors(docIDs);
+			Document[] dvs = se.getDocumentVectors(docIDs , field);
 			for(int v=0;v<dvs.length;v++)
 			{
 				Document dv = dvs[v];

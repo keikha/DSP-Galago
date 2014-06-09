@@ -112,8 +112,8 @@ public class POSTagger {
 	public static void main(String[] args)
 	{
 		POSTagger t = new POSTagger();
-		List<NounPhrase> nps = t.extract("President obama is coming to town");
+		List<NounPhrase> nps = t.extract("http://tweetphoto.com/42cc82 Here's my friend @user596547 she needs more followers so guys follow her jus off the strength she's a bric");
 		for(int i=0;i<nps.size();i++)
-			System.out.println(nps.get(i).text + "\t" + nps.get(i).start + "\t" + nps.get(i).end);
+			System.out.println(nps.get(i).text + "\t" + nps.get(i).start + "\t" + nps.get(i).end + "\t" );
 	}
 }
