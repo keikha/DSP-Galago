@@ -252,7 +252,7 @@ public class Hierarchy {
 	}
 	public void estimate(List<String> qTerms, Long[] docInternalIDs, double[] docScores) throws Exception
 	{
-		Document[] dvs = se.getDocumentVectors(docInternalIDs);
+		Document[] dvs = se.getDocumentVectors(docInternalIDs , field);
 		estimate(qTerms, dvs, docScores);
 	}
 	private void estimate(List<String> qTerms, Document[] dvs, double[] scores) throws Exception

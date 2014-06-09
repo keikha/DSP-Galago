@@ -28,27 +28,23 @@ public class GalagoSearchEngine {
     private Parameters param ;
     private long collectionTermCount;
     private long collectionDocCount;
-    private KrovetzStemmer stemmer ;
-    
+    private KrovetzStemmer stemmerTerm ;
+    private KStemmer stemmerSentence;
+	private TagTokenizer tokenizer; 
+
+	private DocumentComponents dc;
+
+	
+	public static Parameters createParameters(String col)
+	{
+		Parameters p = new Parameters();
+		p.set("index", col);
+		return p;
+	}
+	
 	public GalagoSearchEngine(String col) throws Exception {
-		// TODO Auto-generated constructor stub
-		retrieval = RetrievalFactory.instance(col);
 		
-		param = new Parameters();
-//	    stemmer = new KStemmer();
-		stemmer = new KrovetzStemmer();
-	    
-		//////////////////
-		Node n = new Node();
-	    
-	    n.setOperator("lengths");
-	    n.getNodeParameters().set("part", "lengths");
-	    
-	    FieldStatistics stat = retrieval.getCollectionStatistics(n);
-	    collectionTermCount = stat.collectionLength;
-	    collectionDocCount = stat.documentCount;
-	    
-	    //////////////////////
+		this(createParameters(col));
 	    
 	}
 
@@ -56,6 +52,11 @@ public class GalagoSearchEngine {
 		 retrieval = RetrievalFactory.instance(p);
 		 param = p;
 
+		stemmerTerm = new KrovetzStemmer();
+		stemmerSentence = new KStemmer();
+		tokenizer = new TagTokenizer(new FakeParameters(param));
+		dc = new DocumentComponents(param);
+			
 		 //////////////////
 		 Node n = new Node();
 
@@ -104,45 +105,29 @@ public class GalagoSearchEngine {
 		return (Long[]) internalDocBuffer.toArray();
 	}
 
-//	public Document[] getDocumentVectors(String[] docExternalIDs) throws Exception {
-//		
-//		TagTokenizer tokenizer = new TagTokenizer(new FakeParameters(param));
-//		    
-//		DocumentComponents dc = new DocumentComponents(param);
-//		
-//		List<Document> documents = new ArrayList<Document>();
-//		
-//		for(String id : docExternalIDs)
-//		{
-//
-//		    Document document = retrieval.getDocument( id , dc);
-//		    tokenizer.tokenize(document);
-//		    documents.add(document);
-//		}
-//
-//		return (Document[]) documents.toArray();
-//	}
+	public Document[] getDocumentVectors(String[] docExternalIDs , String field ) throws Exception {
+		
+		
+		List<Document> documents = new ArrayList<Document>();
+		
+		for(String id : docExternalIDs)
+		{
+		    documents.add(getDocumentVector(id, field));
+		}
+
+		return (Document[]) documents.toArray();
+	}
 	
 
 	public Document getDocumentVector(String docExternalID, String field) throws Exception {
 		
-		//////////// to be finished 
-		TagTokenizer tokenizer = new TagTokenizer(new FakeParameters(param));
-
-		DocumentComponents dc = new DocumentComponents(param);
 		
 		Document document = retrieval.getDocument( docExternalID , dc);
 		
-		
-//		tokenizer.tokenize(document);
 		String textInField = getTextInField(document.text, field);
-		System.out.println(textInField);
-		String stemmed = stemmer.stem(textInField);
-		System.out.println(stemmed);
+		String stemmed = stemmerSentence.stem(textInField);
 		Document doc = tokenizer.tokenize(stemmed);
 		
-
-
 		return doc;
 	}
 	
@@ -176,30 +161,23 @@ public class GalagoSearchEngine {
 		String docName = retrieval.getDocumentName((int) docID);
 		return getDocumentText(docName, fieldName);
 	}
-	public Document[] getDocumentVectors(Long[] docInternalIDs) throws Exception {
-		
-		TagTokenizer tokenizer = new TagTokenizer(new FakeParameters(param));
-		    
-		DocumentComponents dc = new DocumentComponents(true, false, false);
-		
-//		List<Document> documents = new ArrayList<Document>();
+
+	public Document[] getDocumentVectors(Long[] docInternalIDs, String field) throws Exception {
+
 		Document[] documents = new Document[docInternalIDs.length];
 		int counter=0;
 		for(long id : docInternalIDs)
 		{
 
-		    Document document = retrieval.getDocument(retrieval.getDocumentName((int) id), dc);
-		    tokenizer.tokenize(document);
-		    System.out.println(document.terms.toString());
-		    documents[counter++] = document;
-//		    documents.add(document);
+		    String documentName = retrieval.getDocumentName((int) id);
 			
+		    documents[counter++] = getDocumentVector(documentName, field);
 		}
-		    
-//		    return (Document[]) documents.toArray();
+		
 		return documents;
 	}
 
+	
 	public double getTermCollectionProb(String term, boolean isStem, boolean smoothed, String  field) throws Exception
 	{
 		if(smoothed)
