@@ -9,6 +9,7 @@ import org.lemurproject.galago.core.index.stats.NodeStatistics;
 import org.lemurproject.galago.core.parse.Document;
 import org.lemurproject.galago.core.parse.TagTokenizer;
 import org.lemurproject.galago.core.parse.Document.DocumentComponents;
+import org.lemurproject.galago.core.parse.stem.KrovetzStemmer;
 import org.lemurproject.galago.core.retrieval.Retrieval;
 import org.lemurproject.galago.core.retrieval.RetrievalFactory;
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
@@ -18,6 +19,8 @@ import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.tupleflow.FakeParameters;
 import org.lemurproject.galago.tupleflow.Parameters;
 
+import ciir.umass.edu.qproc.KStemmer;
+
 
 public class GalagoSearchEngine {
 
@@ -25,12 +28,15 @@ public class GalagoSearchEngine {
     private Parameters param ;
     private long collectionTermCount;
     private long collectionDocCount;
-   
+    private KrovetzStemmer stemmer ;
+    
 	public GalagoSearchEngine(String col) throws Exception {
 		// TODO Auto-generated constructor stub
 		retrieval = RetrievalFactory.instance(col);
 		
 		param = new Parameters();
+//	    stemmer = new KStemmer();
+		stemmer = new KrovetzStemmer();
 	    
 		//////////////////
 		Node n = new Node();
@@ -98,24 +104,24 @@ public class GalagoSearchEngine {
 		return (Long[]) internalDocBuffer.toArray();
 	}
 
-	public Document[] getDocumentVectors(String[] docExternalIDs) throws Exception {
-		
-		TagTokenizer tokenizer = new TagTokenizer(new FakeParameters(param));
-		    
-		DocumentComponents dc = new DocumentComponents(param);
-		
-		List<Document> documents = new ArrayList<Document>();
-		
-		for(String id : docExternalIDs)
-		{
-
-		    Document document = retrieval.getDocument( id , dc);
-		    tokenizer.tokenize(document);
-		    documents.add(document);
-		}
-
-		return (Document[]) documents.toArray();
-	}
+//	public Document[] getDocumentVectors(String[] docExternalIDs) throws Exception {
+//		
+//		TagTokenizer tokenizer = new TagTokenizer(new FakeParameters(param));
+//		    
+//		DocumentComponents dc = new DocumentComponents(param);
+//		
+//		List<Document> documents = new ArrayList<Document>();
+//		
+//		for(String id : docExternalIDs)
+//		{
+//
+//		    Document document = retrieval.getDocument( id , dc);
+//		    tokenizer.tokenize(document);
+//		    documents.add(document);
+//		}
+//
+//		return (Document[]) documents.toArray();
+//	}
 	
 
 	public Document getDocumentVector(String docExternalID, String field) throws Exception {
@@ -128,11 +134,16 @@ public class GalagoSearchEngine {
 		Document document = retrieval.getDocument( docExternalID , dc);
 		
 		
-		tokenizer.tokenize(document);
-		tokenizer.tokenize(getTextInField(document.text, field));
+//		tokenizer.tokenize(document);
+		String textInField = getTextInField(document.text, field);
+		System.out.println(textInField);
+		String stemmed = stemmer.stem(textInField);
+		System.out.println(stemmed);
+		Document doc = tokenizer.tokenize(stemmed);
+		
 
 
-		return document;
+		return doc;
 	}
 	
 	public String getTextInField(String text, String fieldName)
@@ -254,7 +265,9 @@ public class GalagoSearchEngine {
 		
 		GalagoSearchEngine se = new GalagoSearchEngine(p);
 		
-		System.out.println(se.getDocumentVector("20091114000000_2").terms.toString());
+		System.out.println(se.getDocumentVector("20091114000000_2", "tweet").terms.toString());
+		
+		
 	}
 
 }
