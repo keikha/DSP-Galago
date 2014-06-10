@@ -129,13 +129,16 @@ public class GalagoSearchEngine {
 		Document doc = tokenizer.tokenize(textInField);
 
 
-		/////////// to be continued
+
 		for (int i = 0; i < doc.terms.size() ; i++) {
-			doc.terms.set(i, stemmerTerm.stem(doc.terms.get(i)));
+			String term = doc.terms.get(i);
+			String stemmed = stemmerTerm.stem(term);
+			doc.terms.set(i, stemmed);
+			if(!term.equals(stemmed) && !stem2original.containsKey(stemmed))
+			{
+				stem2original.put(stemmed, term);
+			}
 		}
-
-
-		//		String stemmed = stemmerSentence.stem(textInField);
 		
 		return doc;
 	}
@@ -171,7 +174,7 @@ public class GalagoSearchEngine {
 		return getDocumentText(docName, fieldName);
 	}
 
-	public Document[] getDocumentVectors(Long[] docInternalIDs, String field) throws Exception {
+	public Document[] getDocumentVectors(Long[] docInternalIDs, String field ,  HashMap<String, String> stem2original ) throws Exception {
 
 		Document[] documents = new Document[docInternalIDs.length];
 		int counter=0;
@@ -180,7 +183,7 @@ public class GalagoSearchEngine {
 
 		    String documentName = retrieval.getDocumentName((int) id);
 			
-		    documents[counter++] = getDocumentVector(documentName, field);
+		    documents[counter++] = getDocumentVector(documentName, field , stem2original);
 		}
 		
 		return documents;
@@ -291,7 +294,7 @@ public class GalagoSearchEngine {
 		
 //		se.getDocumentVector("20091114000000_2", "tweet").terms.toString()
 //		
-		System.out.println(se.getTermCount("computing", true, "tweet"));
+//		System.out.println(se.getTermCount("computing", true, "tweet"));
 		
 		
 		

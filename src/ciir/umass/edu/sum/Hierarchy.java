@@ -88,11 +88,12 @@ public class Hierarchy {
 	//for phrases
 	private HashMap<String, Integer> vocabMinDistanceToQT = null;
 	
-	private KStemmer st = new KStemmer();
+	private KStemmer stemmer = new KStemmer();
 	private POSTagger tagger = new POSTagger();
 	private NPExtractor npe = null;
-    private TreeMap<String, Integer> tm = new TreeMap<String, Integer>(); //store aspect phrase count
-	
+    private TreeMap<String, Integer> phrase2count = new TreeMap<String, Integer>(); //store aspect phrase count
+    private HashMap<String, String> stem2original = new HashMap<String, String>();
+    
 	/**
 	 * @param args
 	 */
@@ -214,7 +215,7 @@ public class Hierarchy {
 			field = "tweet";
 		
         npe = new NPExtractor(se, field);
-        this.tm = tm;
+        this.phrase2count = tm;
     }
 
 
@@ -240,10 +241,12 @@ public class Hierarchy {
 			scores[j] = score;
 		}
 		String[] qterms = query.split("\\s+");
-		List<String> qts = new ArrayList<String>();
+		List<String> queryTerms = new ArrayList<String>(); // should be stemmed to be able to compare with document terms later
 		for(int i=0;i<qterms.length;i++)
-			qts.add(qterms[i]);
-		estimate(qts, docIDs, scores);
+			{
+				queryTerms.add(stemmer.stem(qterms[i]));
+			}
+		estimate(queryTerms, docIDs, scores);
 	}
 	public void estimate(List<String> qTerms, String[] docExternalIDs, double[] docScores) throws Exception
 	{
@@ -251,8 +254,8 @@ public class Hierarchy {
 		estimate(qTerms, internalIDs, docScores);
 	}
 	public void estimate(List<String> qTerms, Long[] docInternalIDs, double[] docScores) throws Exception
-	{
-		Document[] dvs = se.getDocumentVectors(docInternalIDs , field);
+	{	
+		Document[] dvs = se.getDocumentVectors(docInternalIDs , field , stem2original);
 		estimate(qTerms, dvs, docScores);
 	}
 	private void estimate(List<String> qTerms, Document[] dvs, double[] scores) throws Exception
@@ -394,20 +397,20 @@ public class Hierarchy {
                 NounPhrase np = nps.get(i);
                 if((!usePhrasesOnly || np.text.indexOf(" ")!=-1) && !hashTags)
                 {
-                    if (tm.containsKey(nps.get(i).text))
-                        tm.put(nps.get(i).text, tm.get(nps.get(i).text)+1);
+                    if (phrase2count.containsKey(nps.get(i).text))
+                        phrase2count.put(nps.get(i).text, phrase2count.get(nps.get(i).text)+1);
                     else
-                        tm.put(nps.get(i).text, 1);
+                        phrase2count.put(nps.get(i).text, 1);
                     add(np.text, ngramFreq);
                     updateMin(minDistanceToQT, np.text, minDist(qTermPos, np.start, np.end));
                     dpv.add(np.text, new Markup(np.start, np.end));
                 }
                 else if(hashTags)
                 {
-                    if (tm.containsKey(nps.get(i).text))
-                        tm.put(nps.get(i).text, tm.get(nps.get(i).text)+1);
+                    if (phrase2count.containsKey(nps.get(i).text))
+                        phrase2count.put(nps.get(i).text, phrase2count.get(nps.get(i).text)+1);
                     else
-                        tm.put(nps.get(i).text, 1);
+                        phrase2count.put(nps.get(i).text, 1);
                     add(np.text, ngramFreq);
                     updateMin(minDistanceToQT, np.text, minDist(qTermPos, np.start, np.end));
                     dpv.add(np.text, new Markup(np.start, np.end));
@@ -805,7 +808,7 @@ public class Hierarchy {
 	{
 		String t = term.toLowerCase();
 		if(toStem)
-			t = st.stem(t);
+			t = stemmer.stem(t);
 		Double p = queryLanguageModel.get(t);
 		if(p == null)
 			return 0;
@@ -1011,9 +1014,9 @@ public class Hierarchy {
 		//System.out.println("term : " + stem);
 		
 		if(stem.indexOf(" ") == -1)//single-word term
-			return se.getTermCollectionProb(stem, true, false, field);
+			return se.getTermCollectionProb(stem, true, false, field , stem2original);
 		
-		return ((double)se.getGramCount(stem, true, field))/se.getCollectionTermCount();//multi-word term
+		return ((double)se.getGramCount(stem, true, field , stem2original))/se.getCollectionTermCount(); //multi-word term
 		
 		//return ((double)wikiConcepts.get(stem).longValue())/se.getCollectionTermCount();//multi-word term
 		//return ((double)se.getGramCount(stem, true))/se.getCollectionTermCount();//multi-word term
