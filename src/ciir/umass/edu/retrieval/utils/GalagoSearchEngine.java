@@ -2,6 +2,7 @@ package ciir.umass.edu.retrieval.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -89,6 +90,38 @@ public class GalagoSearchEngine {
 	      List<ScoredDocument> results = retrieval.executeQuery(transformed, param).scoredDocuments;
 	      return (ScoredDocument[]) results.toArray();
 	}
+	
+	private List<Long> resultsToWorkingSet(ScoredDocument[] results) {
+	    ArrayList<Long> ws = new ArrayList();
+	    for (int i = 0; i < results.length; i++) {
+	      ws.add((long) results[i].document);
+	    }
+	    Collections.sort(ws);
+	    return ws;
+	  }
+	
+	
+	public ScoredDocument[] runQuery(String queryText, int topD , ScoredDocument[] initialResults) throws Exception {
+		
+		  List<Long> workingSet = resultsToWorkingSet(initialResults);
+		    param.set("working", workingSet);
+		    
+	      param.set("requested", topD);
+//	      // option to fold query cases -- note that some parameters may require upper case
+	      if (param.get("casefold", false)) {
+	        queryText = queryText.toLowerCase();
+	      }
+//
+//	      // parse and transform query into runnable form
+	      Node root = StructuredQuery.parse(queryText);
+	      Node transformed = retrieval.transformQuery(root, param);
+//
+//
+//	      // run query
+	      List<ScoredDocument> results = retrieval.executeQuery(transformed, param).scoredDocuments;
+	      return (ScoredDocument[]) results.toArray();
+	}
+	
 
 	public Long[] docInternalIDs(String[] docExternalIDs) throws Exception {
 

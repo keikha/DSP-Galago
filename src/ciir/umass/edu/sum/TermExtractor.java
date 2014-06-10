@@ -66,6 +66,7 @@ public class TermExtractor {
         return S;
     }
     public List<String> getDocuments(String query, int topDocs, String field) throws Exception{
+    	
         ScoredDocument[] r = null;
         List<String> S = new ArrayList<String>();
         r = se.runQuery(QueryProcessor.generateSDMFieldQuery(query, field), topDocs);
