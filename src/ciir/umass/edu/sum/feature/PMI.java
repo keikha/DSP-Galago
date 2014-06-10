@@ -4,7 +4,6 @@ package ciir.umass.edu.sum.feature;
  * Created by ashishjain on 4/5/14.
  */
 import ciir.umass.edu.qproc.Stopper;
-
 import ciir.umass.edu.retrieval.utils.GalagoSearchEngine;
 import ciir.umass.edu.retrieval.utils.QueryProcessor;
 import lemurproject.indri.DocumentVector;
@@ -15,6 +14,8 @@ public class PMI {
     //local variables
     private GalagoSearchEngine se = null;
     private String field = "";
+    private HashMap<String, String> stem2original = new HashMap<String, String>();
+    
     public PMI(GalagoSearchEngine se2, String f)
     {
         this.se = se2;
@@ -32,11 +33,11 @@ public class PMI {
                 {
                     String gram = s[i-1] + " " + s[i];
                     gram = QueryProcessor.makeIndriFriendly(gram);
-                    double c1 = se.getTermCount(s[i-1], false , this.field);
-                    double c2 = se.getTermCount(s[i], false, this.field);
+                    double c1 = se.getTermCount(s[i-1], false , this.field , stem2original);
+                    double c2 = se.getTermCount(s[i], false, this.field , stem2original);
                     double c = 0;
                     if(gram.compareTo("") != 0)
-                        c = se.getGramCount(gram, true, this.field);
+                        c = se.getGramCount(gram, true, this.field , stem2original);
                     if(c1 > 0 && c2 > 0)
                     {
                         pmi = c / c1;

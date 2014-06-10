@@ -1,9 +1,9 @@
 package ciir.umass.edu.qproc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import ciir.umass.edu.retrieval.utils.IndriSearchEngine;
 import ciir.umass.edu.retrieval.utils.QueryProcessor;
 import ciir.umass.edu.retrieval.utils.GalagoSearchEngine;
 
@@ -21,10 +21,13 @@ public class NPExtractor {
 	protected GalagoSearchEngine se = null;
 	
 	private String field;
-	public NPExtractor(GalagoSearchEngine se, String field)
+    private HashMap<String, String> stem2original ;
+
+	public NPExtractor(GalagoSearchEngine se, String field, HashMap<String, String> st2or )
 	{
 		this.se = se;
 		this.field = field;
+		this.stem2original = st2or;
 	}
 	public List<NounPhrase> extract(String sentence)
 	{
@@ -50,11 +53,11 @@ public class NPExtractor {
 					{
 						String gram = s[i-1] + " " + s[i];
 						gram = QueryProcessor.makeIndriFriendly(gram);
-						double c1 = se.getTermCount(s[i-1], false, field);
-						double c2 = se.getTermCount(s[i], false, field);
+						double c1 = se.getTermCount(s[i-1], false, field , this.stem2original);
+						double c2 = se.getTermCount(s[i], false, field, this.stem2original);
 						double c = 0;
 						if(gram.compareTo("") != 0)
-							c = se.getGramCount(gram, true, field);
+							c = se.getGramCount(gram, true, field, this.stem2original);
 						if(c1 > 0 && c2 > 0)
 						{
 							pmi = c / c1;

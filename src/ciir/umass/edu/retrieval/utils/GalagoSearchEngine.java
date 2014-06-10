@@ -292,6 +292,13 @@ public class GalagoSearchEngine {
 		
 		GalagoSearchEngine se = new GalagoSearchEngine(p);
 		
+		KStemmer stemmer = new KStemmer();
+		KrovetzStemmer st = new KrovetzStemmer();
+//		
+//		System.out.println(stemmer.stem("biggest selection"));
+		System.out.println(st.stem("computing"));
+		System.out.println(stemmer.stem("computation"));
+		
 //		se.getDocumentVector("20091114000000_2", "tweet").terms.toString()
 //		
 //		System.out.println(se.getTermCount("computing", true, "tweet"));

@@ -42,9 +42,11 @@ private GalagoSearchEngine se = null;
 
 
             //TopicalityFeature tf = new TopicalityFeature(se); //Topicality feature
-
-            Document[] documentVectors = getDocumentVectors(r);
+            
+            HashMap<String, String> stem2original = new HashMap<String, String>();
+            Document[] documentVectors = getDocumentVectors(r, stem2original);
 			double[] scores = getScores(r);
+
 			
 			double diversity = df.getValue(documentVectors, scores);
             double pmi = pm.getValue(query);
@@ -53,7 +55,7 @@ private GalagoSearchEngine se = null;
 
             features[0] = diversity;
             features[1] = pmi;
-            features[2] = (double)se.getGramCount(query, true, field)/(double)se.getCollectionTermCount(); //uniqueness
+            features[2] = (double)se.getGramCount(query, true, field , stem2original)/(double)se.getCollectionTermCount(); //uniqueness
             features[3] = rel;
             //features[3] = topicality;
 
@@ -76,12 +78,12 @@ private GalagoSearchEngine se = null;
 			docIDs[j] = r[j].document;		
 		return docIDs;
 	}
-	protected Document[] getDocumentVectors(ScoredDocument[] r) throws Exception
+	protected Document[] getDocumentVectors(ScoredDocument[] r , HashMap<String, String> stem2original ) throws Exception
 	{
 		Long[] docIDs = new Long[r.length];
 		for(int j=0;j<r.length;j++)
 			docIDs[j] = r[j].document;		
-		return se.getDocumentVectors(docIDs , field);
+		return se.getDocumentVectors(docIDs , field , stem2original);
 	}
 	protected double[] getScores(ScoredDocument[] r) throws Exception
 	{

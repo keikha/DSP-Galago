@@ -171,6 +171,34 @@ public class QueryProcessor {
 
         return "#combine:0=0.8:1=0.15:2=0.05:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
     }
+    
+    public static String generateBigramFieldQuery(String q, String field)
+    {
+
+
+
+        String[] strs = q.split(" ");
+        if(strs.length == 1)
+            return "#combine(" + q + "." + field+ ")";
+        
+        String ow = "";
+        String uw = "";
+//        String unigram = "";
+        
+        for(int i=0;i<strs.length-1;i++)
+        {
+            ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+            uw += "#uw:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+
+//            unigram += strs[i] + "." + field +" ";
+        }
+
+//        unigram += strs[strs.length-1] + "." + field ;
+
+        return "#combine:0=0.7:1=0.3:w=1.0( #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
+    }
+    
+    
 	public static List<Ranking> readIndriRankingFile(String fn, int topD, boolean convertScore)
 	{
 		List<Ranking> rankings = new ArrayList<Ranking>();

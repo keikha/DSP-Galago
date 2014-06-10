@@ -188,7 +188,7 @@ public class Hierarchy {
 	public Hierarchy(GalagoSearchEngine se)
 	{
 		this.se = se;
-		npe = new NPExtractor(se, field);
+		npe = new NPExtractor(se, field , stem2original);
 
 	}
 	public Hierarchy(GalagoSearchEngine se, boolean hashtag)
@@ -200,7 +200,7 @@ public class Hierarchy {
 			field="tags";
 		else 
 			field = "tweet";
-        npe = new NPExtractor(se, field);
+        npe = new NPExtractor(se, field, stem2original);
 //        this.tm = tm;
     }
 	
@@ -214,7 +214,7 @@ public class Hierarchy {
 		else 
 			field = "tweet";
 		
-        npe = new NPExtractor(se, field);
+        npe = new NPExtractor(se, field, stem2original);
         this.phrase2count = tm;
     }
 

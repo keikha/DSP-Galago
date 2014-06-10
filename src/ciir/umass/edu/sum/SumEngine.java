@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.lemurproject.galago.core.parse.Document;
@@ -42,6 +43,8 @@ public class SumEngine {
 
 	protected GalagoSearchEngine se = null;
 	protected KrovetzStemmer stemmer = new KrovetzStemmer();
+	private HashMap<String, String> stem2original = new HashMap<String, String>();
+	
 	public SumEngine(){}
 	public SumEngine(String col)
 	{		
@@ -102,7 +105,7 @@ public class SumEngine {
 				scores[j] = score;
 			}
 			//Pull out the parsed document vector
-			Document[] dvs = se.getDocumentVectors(docIDs , field);
+			Document[] dvs = se.getDocumentVectors(docIDs , field , stem2original);
 			for(int v=0;v<dvs.length;v++)
 			{
 				Document dv = dvs[v];
