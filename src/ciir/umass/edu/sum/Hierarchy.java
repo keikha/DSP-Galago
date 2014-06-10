@@ -219,10 +219,10 @@ public class Hierarchy {
     }
 
 
-	public void estimate(String query, int topD) throws Exception
+	public void estimate(String query, int topD , ScoredDocument[] r) throws Exception
 	{
 		//System.out.println(QueryProcessor.generateSDMFieldQuery(query, field));
-        ScoredDocument[] r = se.runQuery(QueryProcessor.generateBigramFieldQuery(query, field), topD);
+        r = se.runQuery(QueryProcessor.generateBigramFieldQuery(query, field), topD);
 		//ScoredDocument[] r = se.runQuery(generateSDMFieldQuery(query), topD);
 		//ScoredExtentResult[] r = se.runQuery("#1(" + query + ")", topD);
 		

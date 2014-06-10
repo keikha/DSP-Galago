@@ -26,7 +26,7 @@ public class TermExtractor {
     int topD = 1000;
     int topT = 20;
     private Parameters param= null;
-    
+    private ScoredDocument[] initialResults;
     
 //    public TermExtractor(String indexPath) throws Exception {
 //        //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
@@ -69,7 +69,7 @@ public class TermExtractor {
     	
         ScoredDocument[] r = null;
         List<String> S = new ArrayList<String>();
-        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(query, field), topDocs);
+        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(query, field), topDocs , initialResults);
         int size = Math.min(topD, r.length);
         Long[] docIDs = new Long[size];
         for(int j=0;j<r.length;j++)
@@ -230,11 +230,11 @@ public class TermExtractor {
             Hierarchy h = null;
             if(!hashTag) {
 			    h = new Hierarchy(se, false, tm);
-			    h.estimate(query, topD);
+			    h.estimate(query, topD , initialResults);
             }
             else {
                 h = new Hierarchy(se, true, tm);
-                h.estimate(query, topD);
+                h.estimate(query, topD , initialResults);
             }
             
 			String q = stemmer.stem(query);			
