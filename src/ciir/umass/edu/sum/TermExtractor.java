@@ -26,7 +26,7 @@ public class TermExtractor {
     int topD = 1000;
     int topT = 20;
     private Parameters param= null;
-    public ScoredDocument[] initialResults = new ScoredDocument[topD];
+    public ScoredDocument[] initialResults = null;
     
 //    public TermExtractor(String indexPath) throws Exception {
 //        //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
@@ -55,6 +55,7 @@ public class TermExtractor {
 
 
     public List<String> getResults(String query, boolean hashTag) throws Exception{
+        initialResults = new ScoredDocument[topD];
         tm = new TreeMap<String, Integer>();
         Hierarchy.usePhrases = true;
         Hierarchy.usePhrasesOnly = true;
@@ -66,10 +67,19 @@ public class TermExtractor {
         return S;
     }
     public List<String> getDocuments(String query, int topDocs, String field) throws Exception{
-    	
         ScoredDocument[] r = null;
+        String[] qProcess = query.split("\\s+");
+        String reformQuery=qProcess[0];
+        for (int j=1;j<qProcess.length;j++){
+            if (qProcess[j].contentEquals(qProcess[j-1])){
+                continue;
+            }
+            else
+                reformQuery = reformQuery + " " + qProcess[j];
+        }
         List<String> S = new ArrayList<String>();
-        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(query, field), topDocs , initialResults);
+        //r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery, field), topDocs , initialResults);
+        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery.trim(), field), topDocs);
         int size = Math.min(topD, r.length);
         Long[] docIDs = new Long[size];
         for(int j=0;j<r.length;j++)
@@ -78,7 +88,7 @@ public class TermExtractor {
             String text = se.getDocumentText(docIDs[j], field);
             S.add(text);
         }
-        // fix this to get document content -  Ask Mostafa
+        S.add(reformQuery);
         return S;
     }
     public String getPhraseCount(String query) throws Exception{
@@ -221,7 +231,7 @@ public class TermExtractor {
 	protected KStemmer stemmer = new KStemmer();
 	protected DSPApprox extractor = null;
 	public static GalagoSearchEngine se = null;
-    public TreeMap<String, Integer> tm = new TreeMap<String, Integer>();
+    public TreeMap<String, Integer> tm = null;
 
 	public List<TopicTerm> extract(String query, int topD, int topTerm, boolean hashTag) throws Exception
 	{
