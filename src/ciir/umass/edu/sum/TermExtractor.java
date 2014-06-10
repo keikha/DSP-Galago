@@ -26,7 +26,7 @@ public class TermExtractor {
     int topD = 1000;
     int topT = 20;
     private Parameters param= null;
-    private ScoredDocument[] initialResults;
+    public ScoredDocument[] initialResults = new ScoredDocument[topD];
     
 //    public TermExtractor(String indexPath) throws Exception {
 //        //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
@@ -36,9 +36,9 @@ public class TermExtractor {
 //
 //    }
     
-    public TermExtractor(Parameters p) throws Exception {
+    public TermExtractor(String args) throws Exception {
         //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
-        
+        Parameters p = Parameters.parseFile(args);
     	this.param = p;
     	this.extractor = new DSPApprox();
         this.se = new GalagoSearchEngine(param);
