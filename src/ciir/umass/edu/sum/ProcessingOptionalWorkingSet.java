@@ -44,7 +44,7 @@ public class ProcessingOptionalWorkingSet extends ProcessingModel {
   
   public ScoredDocument[] execute1(Node queryTree, Parameters queryParams ) throws Exception {
 	  
-	  System.out.println("in the first round execution, running:" + queryTree.toPrettyString());
+//	  System.out.println("in the first round execution, running:" + queryTree.toPrettyString());
     // This model uses the simplest ScoringContext
     ScoringContext context = new ScoringContext();
 
@@ -83,7 +83,7 @@ public class ProcessingOptionalWorkingSet extends ProcessingModel {
   
   public ScoredDocument[] execute2(Node queryTree, Parameters queryParams) throws Exception {
 	  
-	  System.out.println("in the first round execution, running:" + queryTree.toPrettyString());
+//	  System.out.println("in the first round execution, running:" + queryTree.toPrettyString());
 	  
 	    // This model uses the simplest ScoringContext
 	    ScoringContext context = new ScoringContext();
