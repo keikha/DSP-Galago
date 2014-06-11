@@ -169,7 +169,7 @@ public class QueryProcessor {
 
         unigram += strs[strs.length-1] + "." + field ;
 
-        return "#combine:0=0.8:1=0.15:2=0.05:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
+        return "#combine:0=0.1:1=0.55:2=0.35:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
     }
     
     public static String generateBigramFieldQuery(String q, String field)

@@ -100,7 +100,6 @@ public class TermExtractor {
             String text = se.getDocumentText(docIDs[j], field);
             S.add(text);
         }
-        S.add(reformQuery);
         return S;
     }
     public String getPhraseCount(String query) throws Exception{

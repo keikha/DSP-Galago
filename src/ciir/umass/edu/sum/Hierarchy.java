@@ -933,6 +933,8 @@ public class Hierarchy {
         	String[] tokens = key.split("\\s+");
 		if (tokens.length ==1)
             		return false;
+        if (tokens.length>5)
+            return true;
         	TreeMap<String, Integer> t = new TreeMap();
        		Integer flag=0;
 		for(int i=0;i<tokens.length; i++) {
