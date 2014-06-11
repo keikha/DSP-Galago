@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -219,10 +220,10 @@ public class Hierarchy {
     }
 
 
-	public void estimate(String query, int topD , ScoredDocument[] r) throws Exception
+	public void estimate(String query, int topD , ArrayList<ScoredDocument> results) throws Exception
 	{
 		//System.out.println(QueryProcessor.generateSDMFieldQuery(query, field));
-        r = se.runQuery(QueryProcessor.generateBigramFieldQuery(query, field), topD);
+		ScoredDocument[] r = se.runQuery(QueryProcessor.generateBigramFieldQuery(query, field), topD);
 		//ScoredDocument[] r = se.runQuery(generateSDMFieldQuery(query), topD);
 		//ScoredExtentResult[] r = se.runQuery("#1(" + query + ")", topD);
 		
@@ -239,7 +240,9 @@ public class Hierarchy {
 			else
 				score = Double.MIN_VALUE;
 			scores[j] = score;
+			results.add(r[j]);
 		}
+		
 		String[] qterms = query.split("\\s+");
 		List<String> queryTerms = new ArrayList<String>(); // should be stemmed to be able to compare with document terms later
 		for(int i=0;i<qterms.length;i++)

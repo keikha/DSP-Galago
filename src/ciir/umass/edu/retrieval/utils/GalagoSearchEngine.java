@@ -91,17 +91,17 @@ public class GalagoSearchEngine {
 	      return (ScoredDocument[]) results.toArray();
 	}
 	
-	private List<Long> resultsToWorkingSet(ScoredDocument[] results) {
+	private List<Long> resultsToWorkingSet(ArrayList<ScoredDocument> results) {
 	    ArrayList<Long> ws = new ArrayList();
-	    for (int i = 0; i < results.length; i++) {
-	      ws.add((long) results[i].document);
+	    for (int i = 0; i < results.size(); i++) {
+	      ws.add((long) results.get(i).document);
 	    }
 	    Collections.sort(ws);
 	    return ws;
 	  }
 	
 	
-	public ScoredDocument[] runQuery(String queryText, int topD , ScoredDocument[] initialResults) throws Exception {
+	public ScoredDocument[] runQuery(String queryText, int topD , ArrayList<ScoredDocument> initialResults) throws Exception {
 		
 		  List<Long> workingSet = resultsToWorkingSet(initialResults);
 		    param.set("working", workingSet);

@@ -26,7 +26,8 @@ public class TermExtractor {
     int topD = 1000;
     int topT = 20;
     private Parameters param= null;
-    public ScoredDocument[] initialResults = null;
+//    public ScoredDocument[] initialResults = null;
+    public ArrayList<ScoredDocument> initialResults = null;
     
 //    public TermExtractor(String indexPath) throws Exception {
 //        //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
@@ -55,7 +56,7 @@ public class TermExtractor {
 
 
     public List<String> getResults(String query, boolean hashTag) throws Exception{
-        initialResults = new ScoredDocument[topD];
+        initialResults = new ArrayList<ScoredDocument>();
         tm = new TreeMap<String, Integer>();
         Hierarchy.usePhrases = true;
         Hierarchy.usePhrasesOnly = true;
@@ -78,8 +79,19 @@ public class TermExtractor {
                 reformQuery = reformQuery + " " + qProcess[j];
         }
         List<String> S = new ArrayList<String>();
-        //r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery, field), topDocs , initialResults);
-        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery.trim(), field), topDocs);
+        
+        /////////////////
+//        System.out.println("number of initial results: " + initialResults.length);
+//        System.out.println("First initial results info");
+//        System.out.println("documentNAme : "+initialResults[0].documentName);
+//        System.out.println( "rank: " + initialResults[0].rank);
+//        System.out.println( "score: " + initialResults[0].score);
+//        System.out.println( "document: " + initialResults[0].document);
+        
+        /////////////
+        
+        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery, field), topDocs , initialResults);
+//        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery.trim(), field), topDocs);
         int size = Math.min(topD, r.length);
         Long[] docIDs = new Long[size];
         for(int j=0;j<r.length;j++)
