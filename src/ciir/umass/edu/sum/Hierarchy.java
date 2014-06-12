@@ -222,6 +222,7 @@ public class Hierarchy {
 
 	public void estimate(String query, int topD , ArrayList<ScoredDocument> results) throws Exception
 	{
+
 		//System.out.println(QueryProcessor.generateSDMFieldQuery(query, field));
 		ScoredDocument[] r = se.runQuery(QueryProcessor.generateBigramFieldQuery(query, field), topD);
 		//ScoredDocument[] r = se.runQuery(generateSDMFieldQuery(query), topD);

@@ -102,23 +102,26 @@ public class GalagoSearchEngine {
 	
 	
 	public ScoredDocument[] runQuery(String queryText, int topD , ArrayList<ScoredDocument> initialResults) throws Exception {
+
+
+
+		Parameters queryParam = param.clone();
+
+		List<Long> workingSet = resultsToWorkingSet(initialResults);
+		queryParam.set("working", workingSet);
+
+		queryParam.set("requested", topD);
+
+		if (queryParam.get("casefold", false)) {
+			queryText = queryText.toLowerCase();
+		}
+//	      parse and transform query into runnable form
 		
-		  List<Long> workingSet = resultsToWorkingSet(initialResults);
-		    param.set("working", workingSet);
-		    
-	      param.set("requested", topD);
-//	      // option to fold query cases -- note that some parameters may require upper case
-	      if (param.get("casefold", false)) {
-	        queryText = queryText.toLowerCase();
-	      }
-//
-//	      // parse and transform query into runnable form
 	      Node root = StructuredQuery.parse(queryText);
-	      Node transformed = retrieval.transformQuery(root, param);
-//
-//
-//	      // run query
-	      List<ScoredDocument> results = retrieval.executeQuery(transformed, param).scoredDocuments;
+	      Node transformed = retrieval.transformQuery(root, queryParam);
+
+	      // run query
+	      List<ScoredDocument> results = retrieval.executeQuery(transformed, queryParam).scoredDocuments;
 	      return (ScoredDocument[]) results.toArray();
 	}
 	

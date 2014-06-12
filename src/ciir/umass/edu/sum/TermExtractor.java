@@ -43,6 +43,7 @@ public class TermExtractor {
     	this.param = p;
     	this.extractor = new DSPApprox();
         this.se = new GalagoSearchEngine(param);
+        this.initialResults = new ArrayList<ScoredDocument>();
         // te = new TermExtractor(e, );
 
     }
@@ -56,7 +57,7 @@ public class TermExtractor {
 
 
     public List<String> getResults(String query, boolean hashTag) throws Exception{
-        initialResults = new ArrayList<ScoredDocument>();
+        initialResults.clear();
         tm = new TreeMap<String, Integer>();
         Hierarchy.usePhrases = true;
         Hierarchy.usePhrasesOnly = true;
@@ -79,16 +80,6 @@ public class TermExtractor {
                 reformQuery = reformQuery + " " + qProcess[j];
         }
         List<String> S = new ArrayList<String>();
-        
-        /////////////////
-//        System.out.println("number of initial results: " + initialResults.length);
-//        System.out.println("First initial results info");
-//        System.out.println("documentNAme : "+initialResults[0].documentName);
-//        System.out.println( "rank: " + initialResults[0].rank);
-//        System.out.println( "score: " + initialResults[0].score);
-//        System.out.println( "document: " + initialResults[0].document);
-        
-        /////////////
         
         r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery, field), topDocs , initialResults);
 //        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery.trim(), field), topDocs);
@@ -246,6 +237,9 @@ public class TermExtractor {
 
 	public List<TopicTerm> extract(String query, int topD, int topTerm, boolean hashTag) throws Exception
 	{
+		
+		initialResults.clear();
+		
 		List<TopicTerm> terms = null;
 		try{
             Hierarchy h = null;
