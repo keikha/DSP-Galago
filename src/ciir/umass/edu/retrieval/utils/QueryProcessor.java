@@ -208,9 +208,11 @@ public class QueryProcessor {
         String[] strs = q.split(" ");
         if(strs.length == 1)
             return "#combine(" + q + "." + field+ ")";
+        
         String ow = "";
         String uw = "";
         String unigram = "";
+        
         for(int i=0;i<strs.length-1;i++)
         {
             ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
@@ -236,21 +238,22 @@ public class QueryProcessor {
         
         String ow = "";
         String uw = "";
-        for(int i=0;i<strs.length-1;i++)
-		{
-			ow += "#od:1(" + strs[i] + " " + strs[i+1] + ")."+ field+" ";
-			uw += "#uw:8(" + strs[i] + " " + strs[i+1] + ")."+ field+ " ";
-		}
+
+//        for(int i=0;i<strs.length-1;i++)
+//		{
+//			ow += "#od:1(" + strs[i] + " " + strs[i+1] + ")."+ field+" ";
+//			uw += "#uw:8(" + strs[i] + " " + strs[i+1] + ")."+ field+ " ";
+//		}
 		
 //        String unigram = "";
         
-//        for(int i=0;i<strs.length-1;i++)
-//        {
-//            ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
-//            uw += "#uw:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
-//
-////            unigram += strs[i] + "." + field +" ";
-//        }
+        for(int i=0;i<strs.length-1;i++)
+        {
+            ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+            uw += "#uw:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+
+//            unigram += strs[i] + "." + field +" ";
+        }
 
 //        unigram += strs[strs.length-1] + "." + field ;
 

@@ -16,8 +16,8 @@ public class testTermExtractor {
 		
 		
 		
-//		test1(args);
-		test2(args);
+		test1(args);
+//		test2(args);
 		
 		
 		
@@ -26,7 +26,7 @@ public class testTermExtractor {
 	private static void test1(String[] args) throws Exception {
 		TermExtractor te = new TermExtractor(args[0]);
 		
-		List<String> terms = te.getResults("computer", false);
+		List<String> terms = te.getResults("geek squad", false);
 //		for(String term : terms)
 //		{
 //			System.out.println(term);
