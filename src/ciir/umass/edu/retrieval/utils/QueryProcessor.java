@@ -169,8 +169,34 @@ public class QueryProcessor {
 
         unigram += strs[strs.length-1] + "." + field ;
 
-        return "#combine:0=0.1:1=0.55:2=0.35:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
+        return "#combine:0=0.1:1=0.55:2=0.35:w=1.0( ( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
     }
+    
+
+    public static String generateSecondPhaseQuery(String q, String field)
+    {
+
+
+
+        String[] strs = q.split(" ");
+        if(strs.length == 1)
+            return "#combine(" + q + "." + field+ ")";
+        String ow = "";
+        String uw = "";
+        String unigram = "";
+        for(int i=0;i<strs.length-1;i++)
+        {
+            ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+            uw += "#uw:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+
+            unigram += strs[i] + "." + field +" ";
+        }
+
+        unigram += strs[strs.length-1] + "." + field ;
+
+        return "#combine:0=0.1:1=0.55:2=0.35:w=1.0( #require ( #all( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))))";
+    }
+
     
     public static String generateBigramFieldQuery(String q, String field)
     {
