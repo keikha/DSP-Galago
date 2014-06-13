@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.*;
 
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
@@ -81,7 +79,10 @@ public class TermExtractor {
         }
         List<String> S = new ArrayList<String>();
         
-        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery, field), topDocs , initialResults);
+        String newQuery = QueryProcessor.generateSecondPhaseQueryConjunctive(reformQuery, field);
+        
+        
+		r = se.runQuery(newQuery, topDocs , initialResults);
 //        r = se.runQuery(QueryProcessor.generateSDMFieldQuery(reformQuery.trim(), field), topDocs);
         int size = Math.min(topD, r.length);
         Long[] docIDs = new Long[size];

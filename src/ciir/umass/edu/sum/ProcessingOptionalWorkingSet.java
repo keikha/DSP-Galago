@@ -138,6 +138,7 @@ public class ProcessingOptionalWorkingSet extends ProcessingModel {
 	      context.document = document;
 
 	      // This context is shared among all scorers
+	      if (iterator.hasMatch(document)) {
 	      double score = iterator.score(context);
 	      if (requested < 0 || queue.size() < requested || queue.peek().score < score) {
 	        ScoredDocument scoredDocument = new ScoredDocument(document, score);
@@ -145,6 +146,8 @@ public class ProcessingOptionalWorkingSet extends ProcessingModel {
 	          scoredDocument.annotation = iterator.getAnnotatedNode(context);
 	        }
 	        queue.offer(scoredDocument);
+	      }
+	      
 	      }
 	    }
 	    return toReversedArray(queue);

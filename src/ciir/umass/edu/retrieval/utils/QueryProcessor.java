@@ -133,8 +133,8 @@ public class QueryProcessor {
 		String uw = "";
 		for(int i=0;i<strs.length-1;i++)
 		{
-			ow += "#1(" + strs[i] + " " + strs[i+1] + ") ";
-			uw += "#uw8(" + strs[i] + " " + strs[i+1] + ") ";
+			ow += "#od:1(" + strs[i] + " " + strs[i+1] + ") ";
+			uw += "#uw:8(" + strs[i] + " " + strs[i+1] + ") ";
 		}
 		return "#weight(0.85 #combine(" + q + ") 0.1 #combine(" + ow.trim() + ") 0.05 #combine(" + uw.trim() + "))";
 	}
@@ -149,6 +149,34 @@ public class QueryProcessor {
 		return readIndriRankingFile(fn, -1, true);
 	}
     public static String generateSDMFieldQuery(String q, String field)
+    {
+
+
+
+    	String[] strs = q.split(" ");
+
+
+    	if(strs.length == 1)
+    		return "#combine(" + q + ".(" + field+ "))";
+
+    	String ow = "";
+    	String uw = "";
+    	String unigram = "";
+    	for(int i=0;i<strs.length-1;i++)
+    	{
+    		ow += "#od:1(" + strs[i] + " " + strs[i+1] + ").("+ field+") ";
+    		uw += "#uw:8(" + strs[i] + " " + strs[i+1] + ").("+ field+ ") ";
+    		unigram += strs[i] + ".(" + field +") ";
+    	}
+    
+        unigram += strs[strs.length-1] + ".(" + field+")" ;
+
+        return "#combine:0=0.1:1=0.55:2=0.35:w=1.0( ( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
+    }
+    
+//    #require (#all(computer geek squad) #combine(computer geek squad))
+    
+    public static String generateSecondPhaseQueryConjunctive(String q, String field)
     {
 
 
@@ -169,10 +197,9 @@ public class QueryProcessor {
 
         unigram += strs[strs.length-1] + "." + field ;
 
-        return "#combine:0=0.1:1=0.55:2=0.35:w=1.0( ( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
+        return "#require( #all ("+ unigram + ") #combine:0=0.1:1=0.55:2=0.35:w=1.0(  #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + ")) )";
     }
     
-
     public static String generateSecondPhaseQuery(String q, String field)
     {
 
@@ -194,7 +221,7 @@ public class QueryProcessor {
 
         unigram += strs[strs.length-1] + "." + field ;
 
-        return "#combine:0=0.1:1=0.55:2=0.35:w=1.0( #require ( #all( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))))";
+        return "#combine:0=0.1:1=0.55:2=0.35:w=1.0( #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + "))";
     }
 
     
@@ -209,15 +236,21 @@ public class QueryProcessor {
         
         String ow = "";
         String uw = "";
+        for(int i=0;i<strs.length-1;i++)
+		{
+			ow += "#od:1(" + strs[i] + " " + strs[i+1] + ")."+ field+" ";
+			uw += "#uw:8(" + strs[i] + " " + strs[i+1] + ")."+ field+ " ";
+		}
+		
 //        String unigram = "";
         
-        for(int i=0;i<strs.length-1;i++)
-        {
-            ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
-            uw += "#uw:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
-
-//            unigram += strs[i] + "." + field +" ";
-        }
+//        for(int i=0;i<strs.length-1;i++)
+//        {
+//            ow += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+//            uw += "#uw:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+//
+////            unigram += strs[i] + "." + field +" ";
+//        }
 
 //        unigram += strs[strs.length-1] + "." + field ;
 
