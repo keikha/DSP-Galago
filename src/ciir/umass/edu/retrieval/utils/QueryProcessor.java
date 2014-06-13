@@ -200,7 +200,7 @@ public class QueryProcessor {
         return "#require( #all ("+ unigram + ") #combine:0=0.1:1=0.55:2=0.35:w=1.0(  #combine(" + unigram + ")  #combine(" + ow.trim() + ")  #combine(" + uw.trim() + ")) )";
     }
     
-    public static String generateSecondPhaseQuery(String q, String field)
+    public static String generateModifiedSDMQuery(String q, String field)
     {
 
 
