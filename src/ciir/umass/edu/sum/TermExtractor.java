@@ -79,7 +79,7 @@ public class TermExtractor {
         }
         List<String> S = new ArrayList<String>();
         
-        String newQuery = QueryProcessor.generateSecondPhaseQueryConjunctive(reformQuery, field);
+        String newQuery = QueryProcessor.generateSDMConjuctiveQuery(reformQuery, field);
         
         
 		r = se.runQuery(newQuery, topDocs , initialResults);

@@ -224,7 +224,7 @@ public class Hierarchy {
 	{
 
 		//System.out.println(QueryProcessor.generateSDMFieldQuery(query, field));
-		ScoredDocument[] r = se.runQuery(QueryProcessor.generateModifiedSDMQuery(query, field), topD);
+		ScoredDocument[] r = se.runQuery(QueryProcessor.generateSDMConjuctiveQuery(query, field), topD);
 		//ScoredDocument[] r = se.runQuery(generateSDMFieldQuery(query), topD);
 		//ScoredExtentResult[] r = se.runQuery("#1(" + query + ")", topD);
 		
