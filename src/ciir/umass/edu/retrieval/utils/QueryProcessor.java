@@ -176,7 +176,7 @@ public class QueryProcessor {
     
 //    #require (#all(computer geek squad) #combine(computer geek squad))
     
-    public static String generateSDMConjuctiveQuery(String q, String field)
+    public static String generateUnigramOWConjuctiveQuery(String q, String field)
     {
 
 
@@ -185,19 +185,20 @@ public class QueryProcessor {
         if(strs.length == 1)
             return "#combine(" + q + "." + field+ ")";
         String ow1 = "";
-        String ow8 = "";
+//        String ow8 = "";
         String unigram = "";
         for(int i=0;i<strs.length-1;i++)
         {
             ow1 += "#od:1(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
-            ow8 += "#ow:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
+//            ow8 += "#od:8(" + strs[i] + "." + field + " " +  strs[i+1] +  "." + field +" ) ";
 
             unigram += strs[i] + "." + field +" ";
         }
 
         unigram += strs[strs.length-1] + "." + field ;
 
-        return "#require( #all ("+ unigram + ") #combine:0=0.1:1=0.55:2=0.35:w=1.0(  #combine(" + unigram + ")  #combine(" + ow1.trim() + ")  #combine(" + ow8.trim() + ")) )";
+//        return "#require( #all ("+ unigram + ") #combine:0=0.1:1=0.55:2=0.35:w=1.0(  #combine(" + unigram + ")  #combine(" + ow1.trim() + ")  #combine(" + ow8.trim() + ")) )";
+        return "#require( #all ("+ unigram + ") #combine:0=0.2:1=0.8:w=1.0(  #combine(" + unigram + ")  #combine(" + ow1.trim() + ")  ) )";
     }
     
     public static String generateModifiedSDMQuery(String q, String field)

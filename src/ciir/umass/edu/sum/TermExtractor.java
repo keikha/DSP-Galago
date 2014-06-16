@@ -79,7 +79,7 @@ public class TermExtractor {
         }
         List<String> S = new ArrayList<String>();
         
-        String newQuery = QueryProcessor.generateSDMConjuctiveQuery(reformQuery, field);
+        String newQuery = QueryProcessor.generateUnigramOWConjuctiveQuery(reformQuery, field);
         
         
 		r = se.runQuery(newQuery, topDocs , initialResults);
@@ -254,7 +254,8 @@ public class TermExtractor {
             }
             
 			String q = stemmer.stem(query);			
-			terms = extractor.generateTopicTerms(q, h, topTerm);			
+			terms = extractor.generateTopicTerms(q, h, topTerm);
+			
 		}
 		catch(Exception ex)
 		{
