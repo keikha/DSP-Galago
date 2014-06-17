@@ -108,7 +108,7 @@ public class DSPApprox {
 		for(int i=0;i<terms.size();i++)
 		{
 			map.put(terms.get(i), i);
-			candidates.add(i);
+			candidates.add(i); // Mostafa: isn't it a mapping from i to i ?
 		}
 		
 		List<TreeNode> nodes = new ArrayList<TreeNode>();
@@ -120,7 +120,7 @@ public class DSPApprox {
 			double max = -1000000;
 			for(int c=0;c<candidates.size();c++)
 			{
-				int t = candidates.get(c);
+				int t = candidates.get(c); // Mostafa : it seems to be always c, right?? 
 				int i = terms.get(t);
 				
 				//exclude query terms
@@ -134,6 +134,7 @@ public class DSPApprox {
 					which = c;
 				}
 			}
+			
 			if(which == -1 || max <= 0)
 				break;
 			
