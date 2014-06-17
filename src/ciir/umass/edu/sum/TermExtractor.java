@@ -89,7 +89,7 @@ public class TermExtractor {
         for(int j=0;j<r.length;j++)
         {
             docIDs[j] = r[j].document;
-            String text = se.getDocumentText(docIDs[j], field);
+            String text = se.getDocumentText(docIDs[j], field);            
             S.add(text);
         }
         return S;

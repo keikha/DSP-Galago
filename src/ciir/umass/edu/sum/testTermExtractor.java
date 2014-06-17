@@ -1,6 +1,8 @@
 package ciir.umass.edu.sum;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +28,25 @@ public class testTermExtractor {
 	private static void test1(String[] args) throws Exception {
 		TermExtractor te = new TermExtractor(args[0]);
 		
-		List<String> terms = te.getResults("geek squad", false);
-//		for(String term : terms)
-//		{
-//			System.out.println(term);
-//			
-//		}
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		System.out.println("Please enter the query:");
+		String query1 = br.readLine();
+		
+	       query1 = query1.replaceAll("[#,\\!,\\$,\\^,\\*,&,\\`,[0-9],@,%,(,),\\[,\\],\\?,\\.,\\,\\|,>,<]", "");
 
-//		String newQuery = terms.get(0);
-		List<String> documents = te.getDocuments("computer geek squad", 20, "tweet");
+		List<String> terms = te.getResults(query1, false);
+		for(String term : terms)
+		{
+			System.out.println(term);
+			
+		}
+
+		System.out.println("Please enter the second query:");
+		String query2 = br.readLine();
+		
+
+		List<String> documents = te.getDocuments(query2+" "+query1, 25, "tweet");
 		for(String doc : documents)
 			System.out.println(doc);
 	}

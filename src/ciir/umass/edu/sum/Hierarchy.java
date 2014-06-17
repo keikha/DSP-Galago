@@ -539,7 +539,7 @@ public class Hierarchy {
 				List<String> pos = dv.terms;
 				for(int j=0;j<pos.size();j++)
 				{
-					String stem = dv.terms.get(j);
+					String stem = pos.get(j);
 					if(vocabIndex.containsKey(stem))//vocabIndex is a subset dv's terms
 					{
 						int idx_j = vocabIndex.get(stem).intValue();

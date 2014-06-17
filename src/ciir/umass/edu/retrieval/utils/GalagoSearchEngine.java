@@ -197,6 +197,10 @@ public class GalagoSearchEngine {
 		assert retrieval.getAvailableParts().containsKey("corpus") : "Index does not contain a corpus part.";
 		
 	    Document document = retrieval.getDocument(docName, dc);
+	    
+	    System.out.println("docName: "+ docName);
+	    System.out.println("doctext: " + document.text);
+	    
 	    if (document != null) {
 	      return getTextInField(document.text, fieldName);	    	   
 	    }
