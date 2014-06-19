@@ -39,19 +39,19 @@ public class DSPApprox {
 	
 	private void buildTermHierarchy(TreeNode t, int level, Hierarchy h, List<String> queryTerms, int nTopicTerms) throws Exception
 	{
-		List<Integer> terms = new ArrayList<Integer>();
-		terms.addAll(h.getTopicTerms());
-		if(terms.size() > 0)
+		List<Integer> topicTerms = new ArrayList<Integer>();
+		topicTerms.addAll(h.getTopicTerms());
+		if(topicTerms.size() > 0)
 		{
 			Hierarchy.Neighbor[][] neighbors = h.getCooccurrence();
-			double[] termPredictiveness = computeTermPredictiveness(terms, neighbors);			
+			double[] termPredictiveness = computeTermPredictiveness(topicTerms, neighbors);			
 			
-			List<TreeNode> nodes = candidates(terms, termPredictiveness, neighbors, h, nTopicTerms, queryTerms);
+			List<TreeNode> nodes = candidates(topicTerms, termPredictiveness, neighbors, h, nTopicTerms, queryTerms);
 
 			//free up memory
 			termPredictiveness = null;
 			neighbors = null;
-			terms.clear();
+			topicTerms.clear();
 			
 			List<Integer> exclude = new ArrayList<Integer>();
 			for(int i=0;i<nodes.size();i++)
@@ -94,10 +94,10 @@ public class DSPApprox {
 		}
 		return p;
 	}	
-	private List<TreeNode> candidates(List<Integer> terms, double[] predictiveness, Hierarchy.Neighbor[][] neighbors, Hierarchy h, int nTopicTerms, List<String> queryTerms)
+	private List<TreeNode> candidates(List<Integer> topicTerms, double[] predictiveness, Hierarchy.Neighbor[][] neighbors, Hierarchy h, int nTopicTerms, List<String> queryTerms)
 	{
-		if(nTopicTerms > terms.size())
-			nTopicTerms = terms.size();
+		if(nTopicTerms > topicTerms.size())
+			nTopicTerms = topicTerms.size();
 		
 		double[] termPredictiveness = new double[predictiveness.length];
 		for(int i=0;i<predictiveness.length;i++)
@@ -105,9 +105,9 @@ public class DSPApprox {
 		
 		List<Integer> candidates = new ArrayList<Integer>();
 		Hashtable<Integer, Integer> map = new Hashtable<Integer, Integer>();
-		for(int i=0;i<terms.size();i++)
+		for(int i=0;i<topicTerms.size();i++)
 		{
-			map.put(terms.get(i), i);
+			map.put(topicTerms.get(i), i);
 			candidates.add(i); // Mostafa: isn't it a mapping from i to i ?
 		}
 		
@@ -121,7 +121,7 @@ public class DSPApprox {
 			for(int c=0;c<candidates.size();c++)
 			{
 				int t = candidates.get(c); // Mostafa : it seems to be always c, right?? 
-				int i = terms.get(t);
+				int i = topicTerms.get(t);
 				
 				//exclude query terms
 				if(queryTerms.contains(h.getVocabulary(i)))
@@ -139,20 +139,20 @@ public class DSPApprox {
 				break;
 			
 			int current = candidates.get(which);
-			domSet.add(terms.get(current));//select this topic term
+			domSet.add(topicTerms.get(current));//select this topic term
 			candidates.remove(which);//and remove it from the candidate set
 			
 			//create a tree node for this selected term
-			TreeNode nn = new TreeNode(terms.get(current), QueryProcessor.makeIndriFriendly(h.getVocabulary(terms.get(current))), max);
+			TreeNode nn = new TreeNode(topicTerms.get(current), QueryProcessor.makeIndriFriendly(h.getVocabulary(topicTerms.get(current))), max);
 			nodes.add(nn);
 			
 			//update the set of covered vertices
-			int v = terms.get(current);
+			int v = topicTerms.get(current);
 			if(neighbors[v] != null)
 			{
 				for(int j=0;j<neighbors[v].length;j++)
 				{
-					Hierarchy.Neighbor d = neighbors[v][j];//a dominated vertex
+					Hierarchy.Neighbor d = neighbors[v][j]; // a dominated vertex
 					int t = d.idx;
 					//fixme: thresholding???
 					if(!coveredVertices.containsKey(t))//hasn't been covered before

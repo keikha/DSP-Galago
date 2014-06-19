@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import org.lemurproject.galago.core.parse.Document;
 import org.lemurproject.galago.core.retrieval.ScoredDocument;
 import org.lemurproject.galago.core.retrieval.ScoredPassage;
+import org.lemurproject.galago.tupleflow.Parameters;
 
 import ciir.umass.edu.qproc.KStemmer;
 import ciir.umass.edu.qproc.NPExtractor;
@@ -27,6 +28,7 @@ import ciir.umass.edu.retrieval.dts.LanguageModel;
 import ciir.umass.edu.retrieval.dts.Ranking;
 import ciir.umass.edu.retrieval.utils.DataSource;
 import ciir.umass.edu.retrieval.utils.IndriSearchEngine;
+import ciir.umass.edu.retrieval.utils.QueryGenerator;
 import ciir.umass.edu.retrieval.utils.QueryProcessor;
 import ciir.umass.edu.retrieval.utils.GalagoSearchEngine;
 import ciir.umass.edu.utilities.SimpleMath;
@@ -94,6 +96,8 @@ public class Hierarchy {
 	private NPExtractor npe = null;
     private TreeMap<String, Integer> phrase2count = new TreeMap<String, Integer>(); //store aspect phrase count
     private HashMap<String, String> stem2original = new HashMap<String, String>();
+    
+    private Parameters param = null;
     
 	/**
 	 * @param args
@@ -192,7 +196,7 @@ public class Hierarchy {
 		npe = new NPExtractor(se, field , stem2original);
 
 	}
-	public Hierarchy(GalagoSearchEngine se, boolean hashtag)
+	public Hierarchy(GalagoSearchEngine se, boolean hashtag , Parameters p)
     {
         this.se = se;
         this.hashTags = hashtag;
@@ -202,10 +206,14 @@ public class Hierarchy {
 		else 
 			field = "tweet";
         npe = new NPExtractor(se, field, stem2original);
+        this.param = p;
+        
+        if(!param.containsKey("field"))
+        	this.param.set("field", field);
 //        this.tm = tm;
     }
 	
-    public Hierarchy(GalagoSearchEngine se, boolean hashtag, TreeMap tm)
+    public Hierarchy(GalagoSearchEngine se, boolean hashtag, TreeMap tm, Parameters p)
     {
         this.se = se;
         this.hashTags = hashtag;
@@ -217,6 +225,10 @@ public class Hierarchy {
 		
         npe = new NPExtractor(se, field, stem2original);
         this.phrase2count = tm;
+        this.param = p;
+
+        if(!param.containsKey("field"))
+        	this.param.set("field", field);
     }
 
 
@@ -224,7 +236,8 @@ public class Hierarchy {
 	{
 
 		//System.out.println(QueryProcessor.generateSDMFieldQuery(query, field));
-		ScoredDocument[] r = se.runQuery(QueryProcessor.generateUnigramOWConjuctiveQuery(query, field), topD);
+		
+		ScoredDocument[] r = se.runQuery(QueryGenerator.generateQuery(query, this.param), topD);
 		//ScoredDocument[] r = se.runQuery(generateSDMFieldQuery(query), topD);
 		//ScoredExtentResult[] r = se.runQuery("#1(" + query + ")", topD);
 		

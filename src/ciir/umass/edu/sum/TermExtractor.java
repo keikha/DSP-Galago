@@ -34,6 +34,17 @@ public class TermExtractor {
 //        // te = new TermExtractor(e, );
 //
 //    }
+
+    public TermExtractor(Parameters p , GalagoSearchEngine searchEngine) throws Exception {
+        //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
+        this.param = p;
+    	this.extractor = new DSPApprox();
+        this.se = searchEngine;
+        this.initialResults = new ArrayList<ScoredDocument>();
+        // te = new TermExtractor(e, );
+
+    }
+    
     
     public TermExtractor(String args) throws Exception {
         //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";

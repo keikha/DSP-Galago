@@ -54,6 +54,19 @@ public class GalagoSearchEngine {
 		 retrieval = RetrievalFactory.instance(p);
 		 param = p;
 
+		initialize();
+
+		 //////////////////////
+	}
+
+	public GalagoSearchEngine(Parameters p, Retrieval r) throws Exception {
+		 retrieval = r;
+		 param = p;
+
+		initialize();
+	}
+
+	private void initialize() throws Exception {
 		stemmerTerm = new KrovetzStemmer();
 		stemmerSentence = new KStemmer();
 		tokenizer = new TagTokenizer(new FakeParameters(param));
@@ -71,6 +84,7 @@ public class GalagoSearchEngine {
 
 		 //////////////////////
 	}
+
 	
 
 	public ScoredDocument[] runQuery(String queryText, int topD) throws Exception {
