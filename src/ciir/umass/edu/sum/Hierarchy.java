@@ -409,15 +409,31 @@ public class Hierarchy {
 					System.out.println("phrase: " + nps.get(i).text);
 			}
 			
+//			if(param.get("debug", false) && content.contains("world cup"))
+//			{
+//				System.out.println(content);
+//			}
+			
 			for(int i=0;i<nps.size();i++)
 			{
                 NounPhrase np = nps.get(i);
+                
                 if((!usePhrasesOnly || np.text.indexOf(" ")!=-1) && !hashTags)
                 {
-                    if (phrase2count.containsKey(nps.get(i).text))
-                        phrase2count.put(nps.get(i).text, phrase2count.get(nps.get(i).text)+1);
-                    else
-                        phrase2count.put(nps.get(i).text, 1);
+                	
+                	for(String subPhrase : getAllSubPhrases(np.text))
+                	{
+//                		if(param.get("debug", false) && content.contains("world cup"))
+//            			{
+//            				System.out.println( np.text + ": " + subPhrase);
+//            			}
+                		
+                		if (phrase2count.containsKey(subPhrase))
+                			phrase2count.put(subPhrase, phrase2count.get(subPhrase) +1);
+                		else
+                			phrase2count.put( subPhrase, 1);
+                	}
+                	
                     add(np.text, ngramFreq);
                     updateMin(minDistanceToQT, np.text, minDist(qTermPos, np.start, np.end));
                     dpv.add(np.text, new Markup(np.start, np.end));
@@ -458,6 +474,29 @@ public class Hierarchy {
 	 * @return
 	 * @throws Exception
 	 */
+	
+	private ArrayList<String> getAllSubPhrases(String phrase)
+	{
+		
+		ArrayList<String> allSubPhrases = new ArrayList<String>();
+		
+		String[] parts = phrase.split("\\s+");
+		
+		
+		for (int i = 0; i < parts.length; i++) {
+			String subPart = "";
+			
+			for (int j = i; j < parts.length; j++) {
+				
+				subPart= subPart+parts[j];
+				allSubPhrases.add(subPart);
+				subPart+= " ";
+			}
+		}
+		
+		return allSubPhrases;
+		
+	}
 	private Hashtable<String, Double> estimateQueryLanguageModel(Hashtable<String, Integer> terms, LanguageModel[] dlms, double[] weights) throws Exception
 	{
 		Hashtable<String, Double> qlm = new Hashtable<String, Double>();

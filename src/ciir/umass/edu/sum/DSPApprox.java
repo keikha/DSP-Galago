@@ -154,6 +154,13 @@ public class DSPApprox {
 				{
 					Hierarchy.Neighbor d = neighbors[v][j]; // a dominated vertex
 					int t = d.idx;
+					
+					////// added by Mostafa, it's a test
+//					Integer tid = map.get(t);
+//					if(tid != null)
+//						termPredictiveness[tid.intValue()] -= neighbors[v][j].weight;					
+					///////////////
+					
 					//fixme: thresholding???
 					if(!coveredVertices.containsKey(t))//hasn't been covered before
 					{

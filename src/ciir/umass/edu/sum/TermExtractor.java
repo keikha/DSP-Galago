@@ -67,7 +67,7 @@ public class TermExtractor {
 
     public List<String> getResults(String query, boolean hashTag) throws Exception{
         initialResults.clear();
-        tm = new TreeMap<String, Integer>();
+        phrase2frequency = new TreeMap<String, Integer>();
         Hierarchy.usePhrases = true;
         Hierarchy.usePhrasesOnly = true;
         List<String> S = new ArrayList<String>();
@@ -107,8 +107,8 @@ public class TermExtractor {
     }
     public String getPhraseCount(String query) throws Exception{
         Integer count = 0;
-        if (tm.containsKey(query))
-            count = tm.get(query);
+        if (phrase2frequency.containsKey(query))
+            count = phrase2frequency.get(query);
         return Integer.toString(count);
     }
 
@@ -245,7 +245,7 @@ public class TermExtractor {
 	protected KStemmer stemmer = new KStemmer();
 	protected DSPApprox extractor = null;
 	public static GalagoSearchEngine se = null;
-    public TreeMap<String, Integer> tm = null;
+    public TreeMap<String, Integer> phrase2frequency = null;
 
 	public List<TopicTerm> extract(String query, int topD, int topTerm, boolean hashTag) throws Exception
 	{
@@ -256,17 +256,22 @@ public class TermExtractor {
 		try{
             Hierarchy h = null;
             if(!hashTag) {
-			    h = new Hierarchy(se, false, tm);
+			    h = new Hierarchy(se, false, phrase2frequency, param);
 			    h.estimate(query, topD , initialResults);
             }
             else {
-                h = new Hierarchy(se, true, tm);
+                h = new Hierarchy(se, true, phrase2frequency , param);
                 h.estimate(query, topD , initialResults);
             }
             
 			String q = stemmer.stem(query);			
 			terms = extractor.generateTopicTerms(q, h, topTerm);
 			
+//			if(param.get("debug", false))
+//			{
+//				for(String term : phrase2frequency.keySet())
+//					System.out.println(term + " " + phrase2frequency.get(term));
+//			}
 		}
 		catch(Exception ex)
 		{
