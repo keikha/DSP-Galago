@@ -6,6 +6,11 @@ public class QueryGenerator {
 
 	
 	public static String generateQuery(String query, Parameters param) {
+		
+		if(param.get("stop", false))
+			query = removeStopWords(query, false);
+		query = removeNonAlphaNumericCharacters(query);
+		
 		if(param.getString("field").equals("all"))
 			return generateQuery(query, param.get("queryType", "ql"));
 		else
@@ -19,9 +24,6 @@ public class QueryGenerator {
 
 	private static String generateQuery(String query, String queryType)
 	{
-		
-		query = removeStopWords(query, false);
-		query = removeNonAlphaNumericCharacters(query);
 		
 		if(queryType.equals("SDM"))
 			return "#sdm("+ query+")";
@@ -38,9 +40,6 @@ public class QueryGenerator {
 
 	private static String generateQuery(String query, String queryType, String field)
 	{
-		
-		query = removeStopWords(query, true);
-		query = removeNonAlphaNumericCharacters(query);
 		
 		if(queryType.equals("SDM"))
 			return generateSDMQuery(query, field);

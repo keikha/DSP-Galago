@@ -409,7 +409,7 @@ public class Hierarchy {
 					System.out.println("phrase: " + nps.get(i).text);
 			}
 			
-//			if(param.get("debug", false) && content.contains("world cup"))
+//			if(param.get("debug", false) )
 //			{
 //				System.out.println(content);
 //			}
@@ -423,11 +423,11 @@ public class Hierarchy {
                 	
                 	for(String subPhrase : getAllSubPhrases(np.text))
                 	{
-//                		if(param.get("debug", false) && content.contains("world cup"))
+//                		if(param.get("debug", false) )
 //            			{
 //            				System.out.println( np.text + ": " + subPhrase);
 //            			}
-                		
+//                		
                 		if (phrase2count.containsKey(subPhrase))
                 			phrase2count.put(subPhrase, phrase2count.get(subPhrase) +1);
                 		else
