@@ -156,9 +156,9 @@ public class DSPApprox {
 					int t = d.idx;
 					
 					////// added by Mostafa, it's a test
-//					Integer tid = map.get(t);
-//					if(tid != null)
-//						termPredictiveness[tid.intValue()] -= neighbors[v][j].weight;					
+					Integer tid = map.get(t);
+					if(tid != null)
+						termPredictiveness[tid.intValue()] -= neighbors[v][j].weight;					
 					///////////////
 					
 					//fixme: thresholding???

@@ -20,7 +20,7 @@ public class QueryGenerator {
 	private static String generateQuery(String query, String queryType)
 	{
 		
-		query = removeStopWords(query, true);
+		query = removeStopWords(query, false);
 		query = removeNonAlphaNumericCharacters(query);
 		
 		if(queryType.equals("SDM"))

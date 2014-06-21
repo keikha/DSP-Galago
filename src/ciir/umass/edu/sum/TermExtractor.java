@@ -14,6 +14,7 @@ import org.lemurproject.galago.tupleflow.Parameters;
 
 import ciir.umass.edu.qproc.KStemmer;
 import ciir.umass.edu.qproc.NPExtractor;
+import ciir.umass.edu.retrieval.utils.QueryGenerator;
 import ciir.umass.edu.retrieval.utils.QueryProcessor;
 import ciir.umass.edu.retrieval.utils.GalagoSearchEngine;
 import ciir.umass.edu.retrieval.utils.StringUtils;
@@ -26,6 +27,7 @@ public class TermExtractor {
     private Parameters param= null;
 //    public ScoredDocument[] initialResults = null;
     public ArrayList<ScoredDocument> initialResults = null;
+    private String initialQuery = "";
     
 //    public TermExtractor(String indexPath) throws Exception {
 //        //String index = "/mnt/nfs/work2/ashishjain/adobe/IbrahimData/indexes/NovIndex";
@@ -67,6 +69,7 @@ public class TermExtractor {
 
     public List<String> getResults(String query, boolean hashTag) throws Exception{
         initialResults.clear();
+        initialQuery = query;
         phrase2frequency = new TreeMap<String, Integer>();
         Hierarchy.usePhrases = true;
         Hierarchy.usePhrasesOnly = true;
@@ -90,7 +93,8 @@ public class TermExtractor {
         }
         List<String> S = new ArrayList<String>();
         
-        String newQuery = QueryProcessor.generateUnigramOWConjuctiveQuery(reformQuery, field);
+        String newQuery = QueryGenerator.generateQuery(query, this.param);
+        		
         
         
 		r = se.runQuery(newQuery, topDocs , initialResults);
