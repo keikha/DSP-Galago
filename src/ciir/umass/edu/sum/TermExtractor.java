@@ -73,13 +73,38 @@ public class TermExtractor {
         phrase2frequency = new TreeMap<String, Integer>();
         Hierarchy.usePhrases = true;
         Hierarchy.usePhrasesOnly = true;
+        
         List<String> S = new ArrayList<String>();
-        List<TopicTerm> terms = extract(query, topD, topT, hashTag);
-        for(int i=0;i<terms.size();i++) {
-            S.add(terms.get(i).term);
+        
+        int tempTopT = topT*2;
+        
+        List<TopicTerm> terms = extract(query, topD, tempTopT, hashTag);
+        
+//        for(int i=0;i<topT;i++)
+        int i = 0;
+        while(S.size()<topT && i< terms.size())
+        {
+        	if(phrase2frequency.get(terms.get(i).term)!=null &&  phrase2frequency.get(terms.get(i).term) > 0)
+        		S.add(terms.get(i).term);
+        	i++;
         }
         return S;
     }
+    
+    
+    public List<TopicTerm> getResultsWeighted(String query, boolean hashTag) throws Exception{
+        initialResults.clear();
+        initialQuery = query;
+        phrase2frequency = new TreeMap<String, Integer>();
+        Hierarchy.usePhrases = true;
+        Hierarchy.usePhrasesOnly = true;
+
+        List<String> S = new ArrayList<String>();
+        List<TopicTerm> terms = extract(query, topD, topT, hashTag);
+        
+        return terms;
+    }
+    
     public List<String> getDocuments(String query, int topDocs, String field) throws Exception{
         ScoredDocument[] r = null;
         String[] qProcess = query.split("\\s+");

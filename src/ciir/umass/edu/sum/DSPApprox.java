@@ -104,10 +104,10 @@ public class DSPApprox {
 			termPredictiveness[i] = predictiveness[i];
 		
 		List<Integer> candidates = new ArrayList<Integer>();
-		Hashtable<Integer, Integer> map = new Hashtable<Integer, Integer>();
+		Hashtable<Integer, Integer> vocabIndex2newIndex = new Hashtable<Integer, Integer>();
 		for(int i=0;i<topicTerms.size();i++)
 		{
-			map.put(topicTerms.get(i), i);
+			vocabIndex2newIndex.put(topicTerms.get(i), i);
 			candidates.add(i); // Mostafa: isn't it a mapping from i to i ?
 		}
 		
@@ -156,25 +156,26 @@ public class DSPApprox {
 					int t = d.idx;
 					
 					////// added by Mostafa, it's a test
-					Integer tid = map.get(t);
+					Integer tid = vocabIndex2newIndex.get(t);
 					if(tid != null)
 						termPredictiveness[tid.intValue()] -= neighbors[v][j].weight;					
 					///////////////
 					
 					//fixme: thresholding???
-					if(!coveredVertices.containsKey(t))//hasn't been covered before
-					{
-						if(neighbors[t] != null)
-						{
-							for(int k=0;k<neighbors[t].length;k++)
-							{
-								Integer idx = map.get(neighbors[t][k].idx);
-								if(idx != null)//it is a candidate topic term -> down-weight it
-									termPredictiveness[idx.intValue()] -= neighbors[t][k].weight;
-							}
-						}
-						coveredVertices.put(t, d.weight);
-					}
+//					if(!coveredVertices.containsKey(t))//hasn't been covered before
+//					{
+//						if(neighbors[t] != null)
+//						{
+//							for(int k=0;k<neighbors[t].length;k++)
+//							{
+//								Integer idx = vocabIndex2newIndex.get(neighbors[t][k].idx);
+//								if(idx != null)//it is a candidate topic term -> down-weight it
+//									termPredictiveness[idx.intValue()] -= neighbors[t][k].weight;
+//							}
+//						}
+//						
+//						coveredVertices.put(t, d.weight);
+//					}
 				}
 			}
 		}while(domSet.size() < nTopicTerms);

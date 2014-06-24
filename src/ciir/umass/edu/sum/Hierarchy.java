@@ -299,19 +299,10 @@ public class Hierarchy {
 			weights[i] = (weights[i]/sumDocScore) * docPrior;
 		
 		//record (stemmed) query language model's vocabulary
-		Hashtable<String, Integer> ht = new Hashtable<String, Integer>();
-		for(int i=0;i<dlms.length;i++)
-		{
-			if(dlms[i]==null)
-				continue;
-			List<String> ws = dlms[i].getVocabs();
-			for(int j=0;j<ws.size();j++)
-				ht.put(ws.get(j), 1);
-		}
 		
 		//estimate query language model (term distribution)
 		System.out.print("Estimating query language model... ");
-		queryLanguageModel = estimateQueryLanguageModel(ht, dlms, weights);//no smoothing for now
+		queryLanguageModel = estimateQueryLanguageModel(dlms, weights);//no smoothing for now
 		System.out.println("[Done]");
 		
 		//construct the hierarchy's vocabulary from the query model's terms
@@ -459,7 +450,18 @@ public class Hierarchy {
 				{
 					add(stem, ngramFreq);
 					updateMin(minDistanceToQT, stem, minDist(qTermPos, i, i));
+					dpv.add(stem, new Markup(i , i));
+
+					if (phrase2count.containsKey(stem))
+						phrase2count.put( stem , phrase2count.get(stem)+1);
+					else
+						phrase2count.put(stem, 1);
 				}
+				
+                
+                
+                
+                
 			}
 		}
 		
@@ -497,24 +499,36 @@ public class Hierarchy {
 		return allSubPhrases;
 		
 	}
-	private Hashtable<String, Double> estimateQueryLanguageModel(Hashtable<String, Integer> terms, LanguageModel[] dlms, double[] weights) throws Exception
+	private Hashtable<String, Double> estimateQueryLanguageModel(LanguageModel[] dlms, double[] weights) throws Exception
 	{
 		Hashtable<String, Double> qlm = new Hashtable<String, Double>();
-		for(Enumeration<String> e = terms.keys();e.hasMoreElements();)
+		
+		
+		for(int i=0;i<dlms.length;i++)
 		{
-			String key = e.nextElement().toString();//stem
-			if(key.compareTo("")==0 || key.compareToIgnoreCase("[OOV]")==0)
+			if(dlms[i]==null)
 				continue;
-			//get term probability given by the relevance model RM1 => query language model (no smoothing done at the moment)
-			double p = 0.0;
-			for(int j=0;j<dlms.length;j++)
-				{
-					if(dlms[j]==null)
-						continue;
-					p += dlms[j].probability(key) * weights[j];
-				}
-			qlm.put(key, p);
+			
+			List<String> ws = dlms[i].getVocabs();
+			
+			for(int j=0;j<ws.size();j++)
+			{
+				//				allDocsVocab.put(ws.get(j), 1);
+				String key = ws.get(j);
+				if(key.compareTo("")==0 || key.compareToIgnoreCase("[OOV]")==0)
+					continue;
+				
+				double contribution= dlms[i].probability(key) * weights[i];
+
+				if(!qlm.containsKey(key))
+					qlm.put(key, 0.0);
+				
+				qlm.put(key, qlm.get(key)+contribution);
+
+			}
 		}
+		
+		
 		return qlm;
 	}
 	/**
@@ -533,7 +547,10 @@ public class Hierarchy {
 			// (1) appear in at least two documents
 			// (2) contains at least 2 characters
 			// (3) is not a number
-			int docCount = getDocCount(key, dlms);
+//			int docCount = getDocCount(key, dlms);
+			
+			int docCount = phrase2count.get(key);
+					
 			boolean isNumber = true;
 			try {
 				Double.parseDouble(key);
