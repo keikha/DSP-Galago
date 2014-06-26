@@ -116,9 +116,10 @@ public class TermExtractor {
             else
                 reformQuery = reformQuery + " " + qProcess[j];
         }
+        
         List<String> S = new ArrayList<String>();
         
-        String newQuery = QueryGenerator.generateQuery(query, this.param);
+        String newQuery = QueryGenerator.generateQuery(reformQuery, this.param);
         		
         
         
